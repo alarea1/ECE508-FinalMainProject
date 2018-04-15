@@ -194,7 +194,7 @@ function createFrontEndTable(nodecount) {
         sub_node_tab_card.style.display = 'inline-block';
         sub_node_tab_card.style.position = 'relative';
          sub_node_tab_card.style.float = 'left';
-        sub_node_tab_card.style.top =  Math.floor(i / 4) * 29 + 'rem';
+        sub_node_tab_card.style.top =  Math.floor(i / 4) * 34 + 'rem';
         
         
 
