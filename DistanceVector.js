@@ -363,22 +363,28 @@ function disableNode(id) {
     var id_str = String(id).slice(-1);
     isAlive[Number(id_str)] = false;
   
-    console.log(node_neighbors[Number(id_str)].length);
-        for(int i = 0; i < node_neighbor[Number(id_str)]; i++){
-        graph_table[Number(id)][e.end].cost = 999999;
-        graph_table[e.end][Number(id)].cost = 999999;
+    //console.log(node_neighbors[Number(id_str)].length);
+        for(var i = 0; i < node_neighbors[Number(id_str)].length; i++){
+        graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].cost = 999999;
+        graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].cost = 999999;
 
         console.log("zhixing");
 
-        var update_hop = document.getElementById("hop" + id.toString() + (e.end).toString());
-        var update_cost = document.getElementById("cost" + id.toString() + (e.end).toString());
+        var update_hop = document.getElementById("hop" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
+        var update_cost = document.getElementById("cost" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
 
         update_hop.innerHTML = "Node ID: " + "N";
-        update_cost.innerHTML = graph_table[Number(id)][e.end].cost;
+        update_cost.innerHTML = graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].cost;
         
 
+        var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[Number(id_str)][i].end).toString() + Number(id_str).toString());
+        var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[Number(id_str)][i].end).toString() + Number(id_str).toString());
+
+        update_hop_reverse.innerHTML = "Node ID: " + "N";
+        update_cost_reverse.innerHTML = graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].cost;
+
         }
-    );
+  
 }
 
 
@@ -387,6 +393,27 @@ function ableNode(id) {
     opacity_card.parentElement.style.zIndex = 1;
     opacity_card.parentElement.style.opacity = 0;
 
+    var id = Number(String(id).slice(-1));
+    isAlive[id] = true;
 
+    //console.log(node_neighbors[Number(id_str)].length);
+    for(var i = 0; i < node_neighbors[id].length; i++){
+        graph_table[id][node_neighbors[id][i].end].cost = node_neighbors[id][i].cost;
+        graph_table[node_neighbors[id][i].end][id].cost = node_neighbors[id][i].cost;
+
+        var update_hop = document.getElementById("hop" + id.toString() + (node_neighbors[id][i].end).toString());
+        var update_cost = document.getElementById("cost" + id.toString() + (node_neighbors[id][i].end).toString());
+
+        update_hop.innerHTML = "Node ID: " + node_neighbors[id][i].end;
+        update_cost.innerHTML = graph_table[id][node_neighbors[id][i].end].cost;
+        
+
+        var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[id][i].end).toString() + id.toString());
+        var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[id][i].end).toString() +id.toString());
+
+        update_hop_reverse.innerHTML = "Node ID: " + id.toString();
+        update_cost_reverse.innerHTML = graph_table[node_neighbors[id][i].end][id].cost;
+
+    }
 
 }
