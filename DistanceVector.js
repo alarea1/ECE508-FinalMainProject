@@ -4,6 +4,8 @@ var graph_message = new Array(Node_Count);
 var graph = new Graph();
 var ready_topo = {};
 let unvisited = [];
+let isAlive = [];
+let node_neighbors = [];
 //class Graph
 function Graph() {
     this.edges = [];
@@ -30,6 +32,9 @@ Graph.prototype.addEdge = function(source, target, c) {
     var b = this.addNode(target);
     var edge = new Graph.Edge({ source: a, target: b, weight: c });
     this.edges.push(edge);
+    //node_eighbors = [{end:end_id, cost: cost},{end:end_id, cost:cost}] use this save origin node_neighbor messages
+    //for adding or delete node later.
+    
     return edge;
 }
 
@@ -39,6 +44,7 @@ function distance_vector(num) {
     // call front end module to render the processing table
       createFrontEndTable(num);
       // data structure edge(e: startID-endId: weight)
+      Node_Count = num;
       graph_message[0] = {e: "0-1:4,0-2:2", n: 2}
       graph_message[1] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,2-3:2", n: 5}
       graph_message[2] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-4:3", n: 6}
@@ -47,11 +53,25 @@ function distance_vector(num) {
       graph_message[5] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3,2-7:4", n: 8}
 
     //read graph_message and add egdes to
+    for(var i = 0; i < Node_Count; i++) {
+        isAlive[i] = true;
+    }
+    for(var i = 0; i < Node_Count; i++) {
+        node_neighbors[i] = new Array();
+    }
     for (var index = 0; index < graph_message[Number(num) - 3].n; index++) {
         var s = graph_message[Number(num) - 3].e.charAt(index + 5 * index);
         var t = graph_message[Number(num) - 3].e.charAt(index + 5 * index +2);
         var c = Number(graph_message[Number(num) - 3].e.charAt(index + 5 * index +4));
         graph.addEdge(s, t, c);
+
+        
+        var message_source_target = {end: Number(t), cost: Number(c)};
+        var message_target_source = {end: Number(s), cost: Number(c)};
+        node_neighbors[Number(s)].push(message_source_target);
+        node_neighbors[Number(t)].push(message_target_source);
+
+        
 
         var initialEdges = document.getElementById("cost" + s.toString() + t.toString());
         initialEdges.innerHTML = Number(c);
@@ -62,7 +82,8 @@ function distance_vector(num) {
         var initialHop = document.getElementById("hop" + t.toString() + s.toString());
         initialHop.innerHTML = s;
     }
-    Node_Count = num;
+    
+    
     for (var row = 0; row < Node_Count; row++) {
         graph_table[row] = new Array(Node_Count);
         for (var col = 0; col < Node_Count; col++) {
@@ -110,11 +131,9 @@ function distance_vector(num) {
                 unvisited.push(row);
                 unvisited.push(col);
             }
-
-
-
         }
     }
+    
 };
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -156,6 +175,7 @@ function findMinimum(start, target, next) {
         graph_table[start][target].cost = now;
 
     }
+
     //console.log("start is: " + start, "destination is: " + target, "cost is: " +  graph_table[start][target].cost, "the next hop is: " + next);
     //console.log("okay. let's finish this!")
 
@@ -339,8 +359,26 @@ function disableNode(id) {
     console.log(opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild);
     opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild.style.zIndex = 4;
     opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild.style.opacity = 0.5;
-    
 
+    var id_str = String(id).slice(-1);
+    isAlive[Number(id_str)] = false;
+  
+    console.log(node_neighbors[Number(id_str)].length);
+        for(int i = 0; i < node_neighbor[Number(id_str)]; i++){
+        graph_table[Number(id)][e.end].cost = 999999;
+        graph_table[e.end][Number(id)].cost = 999999;
+
+        console.log("zhixing");
+
+        var update_hop = document.getElementById("hop" + id.toString() + (e.end).toString());
+        var update_cost = document.getElementById("cost" + id.toString() + (e.end).toString());
+
+        update_hop.innerHTML = "Node ID: " + "N";
+        update_cost.innerHTML = graph_table[Number(id)][e.end].cost;
+        
+
+        }
+    );
 }
 
 
