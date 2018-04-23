@@ -213,8 +213,9 @@ function createFrontEndTable(nodecount) {
         sub_node_tab_card.style.width = '18rem';
         sub_node_tab_card.style.display = 'inline-block';
         sub_node_tab_card.style.position = 'relative';
-         sub_node_tab_card.style.float = 'left';
+        sub_node_tab_card.style.float = 'left';
         sub_node_tab_card.style.top =  Math.floor(i / 4) * 34 + 'rem';
+         sub_node_tab_card.style.left = '1rem';
         
         
 
@@ -222,7 +223,7 @@ function createFrontEndTable(nodecount) {
         opacity_card.id = "opacity_card" + i;
         opacity_card.className = "card";
         opacity_card.style.width = '18rem';
-        opacity_card.style.height = '25rem';
+        opacity_card.style.height = '34rem';
         opacity_card.style.display = 'inline-block';
         opacity_card.style.zIndex = '1';
         opacity_card.style.opacity = '0';
@@ -275,6 +276,7 @@ function createFrontEndTable(nodecount) {
         killbutton.id = "killbutton" + i;
        
         var killbutton_div = document.createElement('button');
+        killbutton_div.appendChild(document.createTextNode('X'));
         killbutton_div.style.zIndex = '3';
         killbutton_div.id = "killbutton_div" + i;
         killbutton_div.className="btn btn-warning";
