@@ -2,6 +2,7 @@ var Node_Count = 0;
 var graph_table = new Array(Node_Count);
 var graph_message = {e:"A-B:weight,...",n:0};
 var graph = new Graph();
+
 var ready_topo = {};
 let unvisited = [];
 let isAlive = [];
@@ -18,7 +19,22 @@ let autoplay = false;
 //class Graph
 //Not necessary
 
-
+function Graph() {
+     this.edges = [];
+     this.nodes = {};
+};
+//class Graph
+//Not necessary
+Graph.Node = function GraphNode(node_id) {
+      this.id = node_id;
+};
+//class Graph
+//Not necessary
+Graph.Edge = function GraphEdge(edge_message) {
+    this.source = edge_message.source;
+     this.target = edge_message.target;
+     this.weight = edge_message.weight;
+};
 
 
 function distance_vector(num) {
