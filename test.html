@@ -21,26 +21,24 @@
         </form>
 
     </nav>
-    <button type="button" class="btn btn-primary">Next Step</button>
+    <button type="button" class="btn btn btn-success" id = "autoplaybut" onclick = "auto_display();">autoplay</button>
     <button type="button" class="btn btn-warning">Reset</button>
 
+
     <div class="card" style="width: 36rem;">
-        <form>
+        <form id= "manual_form" >
             <div class="card-body">
-                <h5 class="card-title">Test Console Input</h5>
+                <h5 class="card-title">Manually Control</h5>
                 <div class="form-group">
                     <label for="Sender Id">Sender ID</label>
-                    <input type="text" class="SenderId" id="SenderId" aria-describedby="emailHelp" placeholder="Enter sender id">
+                    <input type="text" class="SenderId" id="SenderId" aria-describedby="emailHelp" placeholder="Enter sender id" name="SenderId">
                 </div>
+                    <label >is sending to:</label>
                 <div class="form-group">
                     <label for="Receive Id">Receive ID</label>
-                    <input type="text" class="ReceiveId" id="ReceiveId" aria-describedby="emailHelp" placeholder="Enter Receive id">
+                    <input type="text" class="ReceiveId" id="ReceiveId" aria-describedby="emailHelp" placeholder="Enter Receive id" name="ReceiveId">
                 </div>
-                <div class="form-group">
-                    <label for="Weight">Weight</label>
-                    <input type="text" class="Weight" id="Weight" aria-describedby="emailHelp" placeholder="Enter Weight Number">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <input type="button" value="Next Step" class="btn btn-primary" onclick = "manual_form_update();"></button>
             </div>
         </form>
     </div>

@@ -6,38 +6,32 @@ var ready_topo = {};
 let unvisited = [];
 let isAlive = [];
 let node_neighbors = [];
+let graph_matrix = [];
+let isStable = false;
+//updating strategy:
+let force_split = true;
+let force_only = false;
+let split_only = false;
+let autoplay = false;
 //class Graph
+//Not necessary
+
 function Graph() {
     this.edges = [];
     this.nodes = {};
 };
+//class Graph
+//Not necessary
 Graph.Node = function GraphNode(node_id) {
     this.id = node_id;
 };
+//class Graph
+//Not necessary
 Graph.Edge = function GraphEdge(edge_message) {
     this.source = edge_message.source;
     this.target = edge_message.target;
     this.weight = edge_message.weight;
 };
-
-
-Graph.prototype.addNode = function(id) {
-    if (this.nodes[id] === undefined) {
-        this.nodes[id] = new Graph.Node(id);
-    }
-    return this.nodes[id];
-}
-Graph.prototype.addEdge = function(source, target, c) {
-    var a = this.addNode(source);
-    var b = this.addNode(target);
-    var edge = new Graph.Edge({ source: a, target: b, weight: c });
-    this.edges.push(edge);
-    //node_eighbors = [{end:end_id, cost: cost},{end:end_id, cost:cost}] use this save origin node_neighbor messages
-    //for adding or delete node later.
-    
-    return edge;
-}
-
 
 
 function distance_vector(num) {
@@ -51,6 +45,12 @@ function distance_vector(num) {
       graph_message[3] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3", n: 6}
       graph_message[4] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3", n: 7}
       graph_message[5] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3,2-7:4", n: 8}
+    for(var i = 0; i < Node_Count; i++) {
+        graph_matrix[i] = new Array(Node_Count);
+        for(var j = 0; j < Node_Count; j++) {
+            graph_matrix[i][j] = Infinity;
+        }
+    }
 
     //read graph_message and add egdes to
     for(var i = 0; i < Node_Count; i++) {
@@ -63,8 +63,10 @@ function distance_vector(num) {
         var s = graph_message[Number(num) - 3].e.charAt(index + 5 * index);
         var t = graph_message[Number(num) - 3].e.charAt(index + 5 * index +2);
         var c = Number(graph_message[Number(num) - 3].e.charAt(index + 5 * index +4));
-        graph.addEdge(s, t, c);
+    //    graph.addEdge(s, t, c);
 
+        graph_matrix[s][t] = c;
+        graph_matrix[t][s] = c;
         
         var message_source_target = {end: Number(t), cost: Number(c)};
         var message_target_source = {end: Number(s), cost: Number(c)};
@@ -87,30 +89,36 @@ function distance_vector(num) {
     for (var row = 0; row < Node_Count; row++) {
         graph_table[row] = new Array(Node_Count);
         for (var col = 0; col < Node_Count; col++) {
-            graph_table[row][col] = { cost: 999999, next_hop: "N" };
+            graph_table[row][col] = { cost: Infinity, next_hop: "N" };
         }
         //Node n -> Node n: nexthop: itself, cost:0
         graph_table[row][row].next_hop = row;
         graph_table[row][row].cost = 0;
     }
 
-    for (e in graph.edges) {
-        s = Number(graph.edges[e].source.id);
-        t = Number(graph.edges[e].target.id);
-        w = Number(graph.edges[e].weight);
-        graph_table[s][t] = { cost: w, next_hop: t };
-        graph_table[t][s] = { cost: w, next_hop: s };
-
+    for(var i = 0; i < Node_Count; i++) {
+        for(var j = 0; j < Node_Count; j++) {
+            if(graph_matrix[i][j] != Infinity) {
+                s = Number(i);
+                t = Number(j);
+                w = Number(graph_matrix[i][j]);
+                graph_table[s][t] = { cost: w, next_hop: t };
+                graph_table[t][s] = { cost: w, next_hop: s };
+            }
+        }
     }
+
+
+   
      for (var row = 0; row < Node_Count; row++) {
         for (var col = 0; col < Node_Count; col++) {
              if(graph_table[row][col].next_hop === "N") {
                 var NoneReachable = document.getElementById("hop" + row.toString() + col.toString());
                 NoneReachable.innerHTML = "None";
              }
-             if(graph_table[row][col].cost === 999999) {
+             if(graph_table[row][col].cost === Infinity) {
                 var NoneReachableCost = document.getElementById("cost" + row.toString() + col.toString());
-                NoneReachableCost.innerHTML = 999999;
+                NoneReachableCost.innerHTML = "Infinity";
              }
              else {
              var normalhop =  document.getElementById("hop" + row.toString() + col.toString());
@@ -122,12 +130,12 @@ function distance_vector(num) {
     }   
     for (var row = 0; row < Node_Count; row++) {
         for (var col = 0; col < Node_Count; col++) {
-                console.log(graph_table[row][col].cost);   
+               // console.log(graph_table[row][col].cost);   
         }
     }   
     for (var row = 0; row < Node_Count; row++) {
         for (var col = 0; col < Node_Count; col++) {
-            if (graph_table[row][col] != "N" && row != col) {
+            if (graph_table[row][col].next_hop != "N" && row != col) {
                 unvisited.push(row);
                 unvisited.push(col);
             }
@@ -147,15 +155,19 @@ function interval_update() {
     unvisited.push(next);
     for (var target = 0; target < Node_Count; target++) {
         if (target != start) {
-            findMinimum(start, target, next);
+            setTimeout(findMinimum(start, target, next), 200);
+            
+
         }
     }
 }
 
 function findMinimum(start, target, next) {
+    if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
-    if (graph_table[start][target].next_hop == next || (now < graph_table[start][target].cost && start != graph_table[next][target].next_hop)) {
+    if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
         var old_cost = graph_table[start][target].cost;
+
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
 
@@ -164,38 +176,21 @@ function findMinimum(start, target, next) {
         // havent consider how routing table should work when killing a node!
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
-
-        update_hop.innerHTML = "Node ID: " + next;
-        update_cost.innerHTML = Number(now) + "original: " + Number(old_cost);
-        
-
-    }
-    if((now < graph_table[start][target].cost && start != graph_table[next][target].next_hop)) {
-        graph_table[start][target].next_hop = next;
-        graph_table[start][target].cost = now;
-
-    }
-
+            if(now == Infinity) {
+            update_hop.innerHTML =  "None"; 
+            } else {
+            update_hop.innerHTML =  next; 
+                }
+            update_cost.innerHTML = Number(now);
+           
+            }   
+        }
+}
     //console.log("start is: " + start, "destination is: " + target, "cost is: " +  graph_table[start][target].cost, "the next hop is: " + next);
     //console.log("okay. let's finish this!")
 
 
 
-}
-
-window.onload = function() {
-
-    distance_vector(7);
-    setInterval(function() { interval_update(); }, 3000);
-    setTimeout(function(){ 
-        for (var row = 0; row < Node_Count; row++) {
-        for (var col = 0; col < Node_Count; col++) {
-                console.log(graph_table[row][col].cost);   
-            }
-        }   
-    }, 40000);
-    //setTimeout(disableNode(1), 1000);
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -205,16 +200,16 @@ window.onload = function() {
 function createFrontEndTable(nodecount) {
     console.log("createFrontEndTable() function works!")
     var main_div = document.getElementById("main");
-    console.log(main_div);
+    //console.log(main_div);
     for(var i = 0; i < nodecount ; i++) {
         var sub_node_tab_card = document.createElement('div');
         sub_node_tab_card.id = "node_tab_card" + i;
         sub_node_tab_card.className = "card";
-        sub_node_tab_card.style.width = '18rem';
+        sub_node_tab_card.style.width = '24rem';
         sub_node_tab_card.style.display = 'inline-block';
         sub_node_tab_card.style.position = 'relative';
         sub_node_tab_card.style.float = 'left';
-        sub_node_tab_card.style.top =  Math.floor(i / 4) * 34 + 'rem';
+        sub_node_tab_card.style.top =  Math.floor(i / 3) * 34 + 'rem';
          sub_node_tab_card.style.left = '1rem';
         
         
@@ -222,8 +217,8 @@ function createFrontEndTable(nodecount) {
         var opacity_card = document.createElement('div');
         opacity_card.id = "opacity_card" + i;
         opacity_card.className = "card";
-        opacity_card.style.width = '18rem';
-        opacity_card.style.height = '34rem';
+        opacity_card.style.width = '24rem';
+        opacity_card.style.height = '26rem';
         opacity_card.style.display = 'inline-block';
         opacity_card.style.zIndex = '1';
         opacity_card.style.opacity = '0';
@@ -360,33 +355,33 @@ function disableNode(id) {
     var opacity_card = document.getElementById(id);
     console.log(opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild);
     opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild.style.zIndex = 4;
-    opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild.style.opacity = 0.5;
+    opacity_card.parentElement.parentElement.parentElement.parentElement.firstChild.style.opacity = 0.9;
 
     var id_str = String(id).slice(-1);
     isAlive[Number(id_str)] = false;
   
     //console.log(node_neighbors[Number(id_str)].length);
         for(var i = 0; i < node_neighbors[Number(id_str)].length; i++){
-        graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].cost = 999999;
-        graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].cost = 999999;
+        graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].cost = Infinity;
+        graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].cost = Infinity;
+        graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].next_hop = "N";
+        graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].next_hop = "N";
 
-        console.log("zhixing");
+        
 
         var update_hop = document.getElementById("hop" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
         var update_cost = document.getElementById("cost" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
 
-        update_hop.innerHTML = "Node ID: " + "N";
-        update_cost.innerHTML = graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].cost;
+        update_hop.innerHTML =  "None";
+        update_cost.innerHTML = "Infinity";
         
 
         var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[Number(id_str)][i].end).toString() + Number(id_str).toString());
         var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[Number(id_str)][i].end).toString() + Number(id_str).toString());
 
-        update_hop_reverse.innerHTML = "Node ID: " + "N";
-        update_cost_reverse.innerHTML = graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].cost;
-
-        }
-  
+        update_hop_reverse.innerHTML = "None";
+        update_cost_reverse.innerHTML = "Infinity";
+    }  
 }
 
 
@@ -402,20 +397,106 @@ function ableNode(id) {
     for(var i = 0; i < node_neighbors[id].length; i++){
         graph_table[id][node_neighbors[id][i].end].cost = node_neighbors[id][i].cost;
         graph_table[node_neighbors[id][i].end][id].cost = node_neighbors[id][i].cost;
+        graph_table[id][node_neighbors[id][i].end].next_hop = node_neighbors[id][i].end;
+        graph_table[node_neighbors[id][i].end][id].next_hop = id;
+
+
 
         var update_hop = document.getElementById("hop" + id.toString() + (node_neighbors[id][i].end).toString());
         var update_cost = document.getElementById("cost" + id.toString() + (node_neighbors[id][i].end).toString());
 
-        update_hop.innerHTML = "Node ID: " + node_neighbors[id][i].end;
+        update_hop.innerHTML = node_neighbors[id][i].end;
         update_cost.innerHTML = graph_table[id][node_neighbors[id][i].end].cost;
         
 
         var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[id][i].end).toString() + id.toString());
         var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[id][i].end).toString() +id.toString());
 
-        update_hop_reverse.innerHTML = "Node ID: " + id.toString();
+        update_hop_reverse.innerHTML = id.toString();
         update_cost_reverse.innerHTML = graph_table[node_neighbors[id][i].end][id].cost;
 
     }
-
 }
+
+function manual_form_update() {
+    
+    var form = document.getElementById("manual_form");
+    
+    var senderId = form.SenderId.value;
+    var recieveId = form.ReceiveId.value;
+    form.reset();
+    console.log(senderId);
+    console.log(recieveId);
+
+    manually_update(senderId, recieveId);
+}
+
+function manually_update(x, z) {
+    setTimeout(function(){ 
+         console.log("manually_update is working steaming from:" + x + "to: " + z );
+         for (var target = 0; target < Node_Count; target++) {
+            if (target != x) {
+                if(force_split) {
+                    console.log("findMinimum working!");
+                    findMinimum(x, target, z);
+                } else if(force_only){
+                    //have not implemented?
+                    //findMinimum_force(x, target, z);
+                } else if(split_only) {
+                    //have not implemented?
+                    //findMinimum_split(x, target, z);
+                }
+                
+            }
+        }
+
+    }, 2000);
+}
+
+function auto_display() {
+    //console.log("auto_display working");
+    autoplay = !autoplay;
+    if(autoplay == true) {
+        var btn = document.getElementById("autoplaybut");
+        btn.className = "btn btn-danger";
+        btn.innerHTML = "Pause"; 
+    } else {
+        var btn = document.getElementById("autoplaybut");
+        btn.className = "btn btn btn-success";
+        btn.innerHTML = "autoplay"; 
+    }
+    
+        var autoRunThread = setInterval(function(){
+        if(autoplay == false) {
+            clearInterval(autoRunThread);
+        }
+        interval_update();
+        console.log("i am working");
+        }, 3000); 
+}
+    
+   
+   
+    
+    
+
+
+
+window.onload = function() {
+
+    distance_vector(7);
+    //setInterval(function() { interval_update(); }, 2000);
+    //setTimeout(function(){ 
+    //    for (var row = 0; row < Node_Count; row++) {
+    //    for (var col = 0; col < Node_Count; col++) {
+    //           // console.log(graph_table[row][col].cost);   
+    //        }
+    //    }   
+    //}, 40000);
+    //setTimeout(disableNode(1), 1000);
+}
+
+
+
+
+
