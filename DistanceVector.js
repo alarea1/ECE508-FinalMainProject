@@ -97,6 +97,7 @@ function distance_vector(num) {
             link_matrix[i][j] = graph_matrix[i][j];
         }
     }
+    initView(Node_Count);
     initLinks(Node_Count);
     renderView();
 

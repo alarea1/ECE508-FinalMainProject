@@ -100,8 +100,6 @@ function cleanView()
 
 }
 
-initView(7);
-
 var Node1 = new zrender.Circle({
       position: [100, 200],
             scale: [1, 1],
