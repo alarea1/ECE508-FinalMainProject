@@ -63,7 +63,6 @@ function distance_vector(num) {
         var s = graph_message[Number(num) - 3].e.charAt(index + 5 * index);
         var t = graph_message[Number(num) - 3].e.charAt(index + 5 * index +2);
         var c = Number(graph_message[Number(num) - 3].e.charAt(index + 5 * index +4));
-    //    graph.addEdge(s, t, c);
 
         graph_matrix[s][t] = c;
         graph_matrix[t][s] = c;
@@ -209,7 +208,7 @@ function createFrontEndTable(nodecount) {
         sub_node_tab_card.style.display = 'inline-block';
         sub_node_tab_card.style.position = 'relative';
         sub_node_tab_card.style.float = 'left';
-        sub_node_tab_card.style.top =  Math.floor(i / 3) * 34 + 'rem';
+        sub_node_tab_card.style.top =  Math.floor(i / 3) * 29 + 'rem';
          sub_node_tab_card.style.left = '1rem';
         
         
