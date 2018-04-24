@@ -58,6 +58,7 @@ function parseTopolgyXML(xml,num)
     }
     i = i+1;
   }
+  
   view_graph_parameters[num-1].pos=pos_list;
   //graph_message.e = links[0].childNodes[0].nodeValue;
 

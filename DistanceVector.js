@@ -38,6 +38,23 @@ Graph.Edge = function GraphEdge(edge_message) {
 
 
 function distance_vector(num) {
+      //clean everything
+      cleanView();
+      delete graph_table;
+      delete graph;
+      delete unvisited;
+      delete isAlive;
+      delete node_neighbors;
+      delete graph_matrix;
+      delete link_matrix;
+      graph_table = new Array(Node_Count);
+      graph = new Graph();
+      unvisited = [];
+      isAlive = [];
+      node_neighbors = [];
+      graph_matrix = [];
+      link_matrix = [];
+      //////////
 
       initTopology(num,0);
 
@@ -250,7 +267,6 @@ function findMinimum_split(start, target, next) {
 
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
-
 
         //now update the responding part of routing table!
         // havent consider how routing table should work when killing a node!

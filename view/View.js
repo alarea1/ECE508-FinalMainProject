@@ -7,6 +7,9 @@ var view_node_list = new Array(Node_Count);
 let view_link_list = [];
 var view_link_count = 0;
 
+var view_focused_node_id = 0; // default A
+var view_focused_node;
+
 let view_node_parameters = [];
 view_node_parameters[0] = {color: '#eeaaff',text: 'A'};
 view_node_parameters[1] = {color: '#abf9ff',text: 'B'};
@@ -17,10 +20,12 @@ view_node_parameters[5] = {color: '#7bffda',text: 'F'};
 view_node_parameters[6] = {color: '#fffd86',text: 'G'};
 
 let view_graph_parameters = [];
-view_graph_parameters[0] = {pos: [100,200,300,300,500,300],radius: 40, font:'30px Arial'};
-view_graph_parameters[1] = {pos: [100,200,300,300,500,300],radius: 40, font:'30px Arial'};
-view_graph_parameters[2] = {pos: [100,200,300,300,500,300],radius: 40, font:'30px Arial'};
-
+view_graph_parameters[0] = {};
+view_graph_parameters[1] = {};
+view_graph_parameters[2] = {pos: [100,200,300,300,500,300],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
+view_graph_parameters[3] = {pos: [50,50,200,50,300,300,300,400],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
+view_graph_parameters[4] = {pos: [50,50,200,50,300,300,300,400,500,300],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
+view_graph_parameters[5] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
 view_graph_parameters[6] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200,600,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
 
 function initView(num)
@@ -49,12 +54,33 @@ function initView(num)
                     font: view_graph_parameters[num-1].font
                 }
     });
+
     view_node_list[i] = newNode;
+    //view_node_list[i].on('click',clickNode(view_node_list[i]));
+
   }
+
+  newnode_x = view_graph_parameters[num-1].pos[0];
+  newnode_y = view_graph_parameters[num-1].pos[1];
+  view_focused_node = new zrender.Circle({
+        position: [newnode_x, newnode_y],
+              scale: [1, 1],
+              shape: {
+                  cx: node_offset,
+                  cy: node_offset,
+                  r: view_graph_parameters[num-1].radius*1.2
+              },
+              style: {
+                  fill: '#ff0004',
+                  lineWidth: 10
+              }
+  });
 }
 
 function initLinks(num)
 {
+  delete view_link_list;
+  view_link_list = [];
   for(var i = 0; i < num; i++) {
       for(var j = 0; j < i; j++) {
         if(link_matrix[i][j]!=Infinity){
@@ -83,132 +109,50 @@ function initLinks(num)
   }
 }
 
+function clickNode(node)
+{
+    var index = 0;
+    for(i=0;i<view_node_list.length;i++){
+      if(node==view_node_list[i]){
+        index = i;
+        continue;
+      }
+    }
+
+      view_focused_node_id = index;
+      var parameter = view_graph_parameters[Node_Count-1];
+      view_focused_node.animateTo({
+        position: [parameter.pos[index*2],parameter.pos[index*2+1]]
+      }, function () {
+        // done
+      });
+}
+
 function renderView()
 {
-
   for(var i=0;i<view_link_count;i++){
     zr.add(view_link_list[i]);
   }
+  zr.add(view_focused_node);
   for(var i=0;i<Node_Count;i++){
     zr.add(view_node_list[i]);
   }
 
 }
 
+//function test(){
+//  console.log("ooooops!");
+//}
+
 function cleanView()
 {
-
+  zr.remove(view_focused_node);
+  for(var i=0;i<view_link_count;i++){
+    zr.remove(view_link_list[i]);
+  }
+  for(var i=0;i<Node_Count;i++){
+    zr.remove(view_node_list[i]);
+  }
 }
 
-var Node1 = new zrender.Circle({
-      position: [100, 200],
-            scale: [1, 1],
-            shape: {
-                cx: 50,
-                cy: 50,
-                r: 40
-            },
-            style: {
-                fill: view_node_parameters[0].color,
-                lineWidth: 10,
-                text: view_node_parameters[4].text,
-                textPosition:'inside',
-                font: '30px Arial'
-            }
-});
-
-var Node2 = new zrender.Circle({
-      position: [300, 300],
-            scale: [1, 1],
-            shape: {
-                cx: 50,
-                cy: 50,
-                r: 40
-            },
-            style: {
-                fill: '#abf9ff',
-                lineWidth: 10,
-                text:'B',
-                textPosition:'inside',
-                font: '30px Arial'
-            }
-});
-
-var Node3 = new zrender.Circle({
-      position: [500, 300],
-            scale: [1, 1],
-            shape: {
-                cx: 50,
-                cy: 50,
-                r: 40
-            },
-            style: {
-                fill: '#adffad',
-                lineWidth: 10,
-                text:'C',
-                textPosition:'inside',
-                font: '30px Arial'
-            }
-});
-
-var link1 = new zrender.Line({
-  style: {
-      lineWidth:10,
-      stroke: '#949494',
-      text:'4',
-      width: 0,
-      height: 20,
-      textFill: '#000',
-      font: '20px Arial'
-  },
-  shape: {
-      x1: 500+node_offset,
-      y1: 300+node_offset,
-      x2: 300+node_offset,
-      y2: 300+node_offset
-  }
-});
-
-var link2 = new zrender.Line({
-  style: {
-      lineWidth:10,
-      stroke: '#949494',
-      text:'6',
-      width: 0,
-      height: 20,
-      textFill: '#000',
-      font: '20px Arial'
-  },
-  shape: {
-      x1: 300+node_offset,
-      y1: 300+node_offset,
-      x2: 100+node_offset,
-      y2: 200+node_offset
-  }
-});
-
-//zr.add(link1);
-//zr.add(link2);
-
-//zr.add(Node1);
-//zr.add(Node2);
-//zr.add(Node3);
-
-var vector1 = initVector(500,300,'C','B','50');
-
-zr.add(vector1);
-
-vector1.animate('', true)
-            .when(1000, {
-                position: [300, 300]
-            })
-            .when(2000, {
-                position: [100, 200]
-            })
-            .when(3000, {
-                position: [300, 300]
-            })
-            .when(4000, {
-                position: [500, 300]
-            })
-            .start();
+//var vector1 = initVector(500,300,'C','B','50');
