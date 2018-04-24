@@ -1,13 +1,15 @@
 var Node_Count = 0;
 var graph_table = new Array(Node_Count);
-var graph_message = new Array(Node_Count);
+var graph_message = {e:"A-B:weight,...",n:0};
 var graph = new Graph();
 var ready_topo = {};
 let unvisited = [];
 let isAlive = [];
 let node_neighbors = [];
 let graph_matrix = [];
+let link_matrix = [];
 let isStable = false;
+
 //updating strategy:
 let force_split = true;
 let force_only = false;
@@ -35,16 +37,19 @@ Graph.Edge = function GraphEdge(edge_message) {
 
 
 function distance_vector(num) {
+
+      initTopology(num,0);
+
     // call front end module to render the processing table
       createFrontEndTable(num);
       // data structure edge(e: startID-endId: weight)
       Node_Count = num;
-      graph_message[0] = {e: "0-1:4,0-2:2", n: 2}
-      graph_message[1] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,2-3:2", n: 5}
-      graph_message[2] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-4:3", n: 6}
-      graph_message[3] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3", n: 6}
-      graph_message[4] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3", n: 7}
-      graph_message[5] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3,2-7:4", n: 8}
+      //graph_message[0] = {e: "0-1:4,0-2:2", n: 2}
+      //graph_message[1] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,2-3:2", n: 5}
+      //graph_message[2] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-4:3", n: 6}
+      //graph_message[3] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3", n: 6}
+      //graph_message[4] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3", n: 7}
+      //graph_message[5] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3,2-7:4", n: 8}
     for(var i = 0; i < Node_Count; i++) {
         graph_matrix[i] = new Array(Node_Count);
         for(var j = 0; j < Node_Count; j++) {
@@ -52,6 +57,7 @@ function distance_vector(num) {
         }
     }
 
+    console.log(graph_message.e);
     //read graph_message and add egdes to
     for(var i = 0; i < Node_Count; i++) {
         isAlive[i] = true;
@@ -59,20 +65,19 @@ function distance_vector(num) {
     for(var i = 0; i < Node_Count; i++) {
         node_neighbors[i] = new Array();
     }
-    for (var index = 0; index < graph_message[Number(num) - 3].n; index++) {
-        var s = graph_message[Number(num) - 3].e.charAt(index + 5 * index);
-        var t = graph_message[Number(num) - 3].e.charAt(index + 5 * index +2);
-        var c = Number(graph_message[Number(num) - 3].e.charAt(index + 5 * index +4));
+    for (var index = 0; index < graph_message.n; index++) {
+        var s = graph_message.e.charAt(index + 5 * index);
+        var t = graph_message.e.charAt(index + 5 * index +2);
+        var c = Number(graph_message.e.charAt(index + 5 * index +4));
 
         graph_matrix[s][t] = c;
         graph_matrix[t][s] = c;
-        
+
         var message_source_target = {end: Number(t), cost: Number(c)};
         var message_target_source = {end: Number(s), cost: Number(c)};
         node_neighbors[Number(s)].push(message_source_target);
         node_neighbors[Number(t)].push(message_target_source);
 
-        
 
         var initialEdges = document.getElementById("cost" + s.toString() + t.toString());
         initialEdges.innerHTML = Number(c);
@@ -83,8 +88,17 @@ function distance_vector(num) {
         var initialHop = document.getElementById("hop" + t.toString() + s.toString());
         initialHop.innerHTML = s;
     }
-    
-    
+
+    // for rendering topology in view
+    for(var i = 0; i < Node_Count; i++) {
+        link_matrix[i] = new Array(Node_Count);
+        for(var j = 0; j < Node_Count; j++) {
+            link_matrix[i][j] = graph_matrix[i][j];
+        }
+    }
+    initLinks(Node_Count);
+    renderView();
+
     for (var row = 0; row < Node_Count; row++) {
         graph_table[row] = new Array(Node_Count);
         for (var col = 0; col < Node_Count; col++) {
@@ -108,7 +122,7 @@ function distance_vector(num) {
     }
 
 
-   
+
      for (var row = 0; row < Node_Count; row++) {
         for (var col = 0; col < Node_Count; col++) {
              if(graph_table[row][col].next_hop === "N") {
@@ -124,14 +138,14 @@ function distance_vector(num) {
              var normalcost =  document.getElementById("cost" + row.toString() + col.toString());
              normalhop.innerHTML = graph_table[row][col].next_hop;
              normalcost.innerHTML = graph_table[row][col].cost;
-             }    
+             }
         }
-    }   
+    }
     for (var row = 0; row < Node_Count; row++) {
         for (var col = 0; col < Node_Count; col++) {
-               // console.log(graph_table[row][col].cost);   
+               // console.log(graph_table[row][col].cost);
         }
-    }   
+    }
     for (var row = 0; row < Node_Count; row++) {
         for (var col = 0; col < Node_Count; col++) {
             if (graph_table[row][col].next_hop != "N" && row != col) {
@@ -140,7 +154,7 @@ function distance_vector(num) {
             }
         }
     }
-    
+
 };
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +180,7 @@ function interval_update() {
             setTimeout(findMinimum_split(start, target, next), 500);
             }
         }
-        
+
     }
 }
 
@@ -186,13 +200,13 @@ function findMinimum(start, target, next) {
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
             if(now == Infinity) {
-            update_hop.innerHTML =  "None"; 
+            update_hop.innerHTML =  "None";
             } else {
-            update_hop.innerHTML =  next; 
+            update_hop.innerHTML =  next;
                 }
             update_cost.innerHTML = Number(now);
-           
-            }   
+
+            }
         }
 }
     //console.log("start is: " + start, "destination is: " + target, "cost is: " +  graph_table[start][target].cost, "the next hop is: " + next);
@@ -214,13 +228,13 @@ function findMinimum_force(start, target, next) {
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
             if(now == Infinity) {
-            update_hop.innerHTML =  "None"; 
+            update_hop.innerHTML =  "None";
             } else {
-            update_hop.innerHTML =  next; 
+            update_hop.innerHTML =  next;
                 }
             update_cost.innerHTML = Number(now);
-           
-            }   
+
+            }
         }
 }
 
@@ -241,13 +255,13 @@ function findMinimum_split(start, target, next) {
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
             if(now == Infinity) {
-            update_hop.innerHTML =  "None"; 
+            update_hop.innerHTML =  "None";
             } else {
-            update_hop.innerHTML =  next; 
+            update_hop.innerHTML =  next;
                 }
             update_cost.innerHTML = Number(now);
-           
-            }   
+
+            }
         }
 }
 
@@ -272,8 +286,8 @@ function createFrontEndTable(nodecount) {
         sub_node_tab_card.style.float = 'left';
         sub_node_tab_card.style.top =  Math.floor(i / 3) * 29 + 'rem';
          sub_node_tab_card.style.left = '1rem';
-        
-        
+
+
 
         var opacity_card = document.createElement('div');
         opacity_card.id = "opacity_card" + i;
@@ -286,7 +300,7 @@ function createFrontEndTable(nodecount) {
         opacity_card.style.position = 'absolute';
         opacity_card.style.backgroundColor = 'red';
 
-        
+
         var opacity_card_toggle = document.createElement('div');
         opacity_card_toggle.onmouseover = function blur() {
             pfx = ["webkit", "moz", "MS", "o", ""],
@@ -309,8 +323,8 @@ function createFrontEndTable(nodecount) {
         var opacity_card_toggle_text = document.createTextNode("restore node : " + i);
         opacity_card_toggle.style.position = 'absolute';
         opacity_card_toggle.style.backgroundColor = 'orange';
-        opacity_card_toggle.style.left= '25%'; 
-        opacity_card_toggle.style.top= '25%'; 
+        opacity_card_toggle.style.left= '25%';
+        opacity_card_toggle.style.top= '25%';
         opacity_card.appendChild(opacity_card_toggle);
         opacity_card_toggle.appendChild(opacity_card_toggle_text);
 
@@ -330,7 +344,7 @@ function createFrontEndTable(nodecount) {
 
         var killbutton = document.createElement('th');
         killbutton.id = "killbutton" + i;
-       
+
         var killbutton_div = document.createElement('button');
         killbutton_div.appendChild(document.createTextNode('X'));
         killbutton_div.style.zIndex = '3';
@@ -338,7 +352,7 @@ function createFrontEndTable(nodecount) {
         killbutton_div.className="btn btn-warning";
         killbutton_div.type = "button";
         killbutton_div.addEventListener('click', function() {
-        
+
         disableNode(this.id);
         }, false);
 
@@ -420,7 +434,7 @@ function disableNode(id) {
 
     var id_str = String(id).slice(-1);
     isAlive[Number(id_str)] = false;
-  
+
     //console.log(node_neighbors[Number(id_str)].length);
         for(var i = 0; i < node_neighbors[Number(id_str)].length; i++){
         graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].cost = Infinity;
@@ -428,21 +442,21 @@ function disableNode(id) {
         graph_table[Number(id_str)][node_neighbors[Number(id_str)][i].end].next_hop = "N";
         graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].next_hop = "N";
 
-        
+
 
         var update_hop = document.getElementById("hop" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
         var update_cost = document.getElementById("cost" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
 
         update_hop.innerHTML =  "None";
         update_cost.innerHTML = "Infinity";
-        
+
 
         var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[Number(id_str)][i].end).toString() + Number(id_str).toString());
         var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[Number(id_str)][i].end).toString() + Number(id_str).toString());
 
         update_hop_reverse.innerHTML = "None";
         update_cost_reverse.innerHTML = "Infinity";
-    }  
+    }
 }
 
 
@@ -468,7 +482,7 @@ function ableNode(id) {
 
         update_hop.innerHTML = node_neighbors[id][i].end;
         update_cost.innerHTML = graph_table[id][node_neighbors[id][i].end].cost;
-        
+
 
         var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[id][i].end).toString() + id.toString());
         var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[id][i].end).toString() +id.toString());
@@ -480,9 +494,9 @@ function ableNode(id) {
 }
 
 function manual_form_update() {
-    
+
     var form = document.getElementById("manual_form");
-    
+
     var senderId = form.SenderId.value;
     var recieveId = form.ReceiveId.value;
     form.reset();
@@ -494,7 +508,7 @@ function manual_form_update() {
 
 
 function manually_update(x, z) {
-    setTimeout(function(){ 
+    setTimeout(function(){
          console.log("manually_update is working steaming from:" + x + "to: " + z );
          for (var target = 0; target < Node_Count; target++) {
             if (target != x) {
@@ -510,7 +524,7 @@ function manually_update(x, z) {
                     //have not implemented?
                     findMinimum_split(x, target, z);
                 }
-                
+
             }
         }
 
@@ -523,22 +537,22 @@ function auto_display() {
     if(autoplay == true) {
         var btn = document.getElementById("autoplaybut");
         btn.className = "btn btn-danger";
-        btn.innerHTML = "Pause"; 
+        btn.innerHTML = "Pause";
     } else {
         var btn = document.getElementById("autoplaybut");
         btn.className = "btn btn btn-success";
-        btn.innerHTML = "autoplay"; 
+        btn.innerHTML = "autoplay";
     }
-    
+
         var autoRunThread = setInterval(function(){
         if(autoplay == false) {
             clearInterval(autoRunThread);
         }
         interval_update();
         console.log("i am working");
-        }, 3000); 
+        }, 3000);
 }
-    
+
 function fs_mode() {
     force_split = true;
     force_only = false;
@@ -552,7 +566,7 @@ function fs_mode() {
     so_btn.className = "btn btn-warning";
     document.getElementById("current_strategy").innerHTML = "Forced-Update & Split-Horizon(default)";
 
-} 
+}
 
 function fu_mode() {
     force_split = false;
@@ -568,7 +582,7 @@ function fu_mode() {
     document.getElementById("current_strategy").innerHTML = "Forced-Update-Only";
 
 
-}  
+}
 function sh_mode() {
     force_split = false;
     force_only = false;
@@ -582,9 +596,9 @@ function sh_mode() {
     so_btn.className = "btn btn-warning active";
     document.getElementById("current_strategy").innerHTML = "Split-Horizon-Only";
 
-}    
-    
-    
+}
+
+
 
 
 
@@ -592,17 +606,12 @@ window.onload = function() {
 
     distance_vector(7);
     //setInterval(function() { interval_update(); }, 2000);
-    //setTimeout(function(){ 
+    //setTimeout(function(){
     //    for (var row = 0; row < Node_Count; row++) {
     //    for (var col = 0; col < Node_Count; col++) {
-    //           // console.log(graph_table[row][col].cost);   
+    //           // console.log(graph_table[row][col].cost);
     //        }
-    //    }   
+    //    }
     //}, 40000);
     //setTimeout(disableNode(1), 1000);
 }
-
-
-
-
-
