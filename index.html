@@ -29,6 +29,14 @@
     </nav>
     <button type="button" class="btn btn btn-success" id = "autoplaybut" onclick = "auto_display();">autoplay</button>
     <button type="button" class="btn btn-warning">Reset</button>
+    <div class="card" style="width: 36rem;">
+        <h5 class="card-title">Distance Vector Strategy:</h5>
+        <h5 id = "current_strategy" class="card-title">Forced-Update & Split-Horizon(default)</h5>
+        <button type="button" class="btn btn-primary active" id = "forced_split" onclick = "fs_mode()">Forced-Update & Split-Horizon(default)</button>
+        <button type="button" class="btn btn-info" id = "forcedonly" onclick = "fu_mode()">Forced-Update-Only</button>
+        <button type="button" class="btn btn-warning" id = "splitonly" onclick = "sh_mode()">Split-Horizon-Only</button>
+    </div>
+
 
 
     <div class="card" style="width: 36rem;">

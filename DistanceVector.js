@@ -153,15 +153,25 @@ function interval_update() {
     unvisited.push(start);
     unvisited.push(next);
     for (var target = 0; target < Node_Count; target++) {
-        if (target != start) {
-            setTimeout(findMinimum(start, target, next), 200);
-            
-
+        if(force_split == true){
+            if (target != start) {
+            setTimeout(findMinimum(start, target, next), 500);
+            }
+        } else if(force_only == true) {
+            if (target != start) {
+            setTimeout(findMinimum_force(start, target, next), 500);
+            }
+        } else if(split_only == true) {
+            if (target != start) {
+            setTimeout(findMinimum_split(start, target, next), 500);
+            }
         }
+        
     }
 }
 
 function findMinimum(start, target, next) {
+    console.log("findMinimum is working");
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
     if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
@@ -188,6 +198,58 @@ function findMinimum(start, target, next) {
     //console.log("start is: " + start, "destination is: " + target, "cost is: " +  graph_table[start][target].cost, "the next hop is: " + next);
     //console.log("okay. let's finish this!")
 
+function findMinimum_force(start, target, next) {
+    console.log("findMinimum_force is working");
+    if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
+    var now = graph_table[start][next].cost + graph_table[next][target].cost;
+    if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)))) {
+        var old_cost = graph_table[start][target].cost;
+
+        graph_table[start][target].next_hop = next;
+        graph_table[start][target].cost = now;
+
+
+        //now update the responding part of routing table!
+        // havent consider how routing table should work when killing a node!
+        var update_hop = document.getElementById("hop" + start.toString() + target.toString());
+        var update_cost = document.getElementById("cost" + start.toString() + target.toString());
+            if(now == Infinity) {
+            update_hop.innerHTML =  "None"; 
+            } else {
+            update_hop.innerHTML =  next; 
+                }
+            update_cost.innerHTML = Number(now);
+           
+            }   
+        }
+}
+
+
+function findMinimum_split(start, target, next) {
+    console.log("findMinimum_split is working");
+    if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
+    var now = graph_table[start][next].cost + graph_table[next][target].cost;
+    if ((((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
+        var old_cost = graph_table[start][target].cost;
+
+        graph_table[start][target].next_hop = next;
+        graph_table[start][target].cost = now;
+
+
+        //now update the responding part of routing table!
+        // havent consider how routing table should work when killing a node!
+        var update_hop = document.getElementById("hop" + start.toString() + target.toString());
+        var update_cost = document.getElementById("cost" + start.toString() + target.toString());
+            if(now == Infinity) {
+            update_hop.innerHTML =  "None"; 
+            } else {
+            update_hop.innerHTML =  next; 
+                }
+            update_cost.innerHTML = Number(now);
+           
+            }   
+        }
+}
 
 
 
@@ -430,20 +492,23 @@ function manual_form_update() {
     manually_update(senderId, recieveId);
 }
 
+
 function manually_update(x, z) {
     setTimeout(function(){ 
          console.log("manually_update is working steaming from:" + x + "to: " + z );
          for (var target = 0; target < Node_Count; target++) {
             if (target != x) {
                 if(force_split) {
-                    console.log("findMinimum working!");
+                    //console.log("findMinimum force_split working!");
                     findMinimum(x, target, z);
                 } else if(force_only){
+                    //console.log("findMinimum force_only working!");
                     //have not implemented?
-                    //findMinimum_force(x, target, z);
+                    findMinimum_force(x, target, z);
                 } else if(split_only) {
+                    //console.log("findMinimum split_only working!");
                     //have not implemented?
-                    //findMinimum_split(x, target, z);
+                    findMinimum_split(x, target, z);
                 }
                 
             }
@@ -474,8 +539,50 @@ function auto_display() {
         }, 3000); 
 }
     
-   
-   
+function fs_mode() {
+    force_split = true;
+    force_only = false;
+    split_only = false;
+    var fs_btn = document.getElementById("forced_split");
+    var fo_btn = document.getElementById("forcedonly");
+    var so_btn = document.getElementById("splitonly");
+
+    fs_btn.className = "btn btn-primary active";
+    fo_btn.className = "btn btn-info";
+    so_btn.className = "btn btn-warning";
+    document.getElementById("current_strategy").innerHTML = "Forced-Update & Split-Horizon(default)";
+
+} 
+
+function fu_mode() {
+    force_split = false;
+    force_only = true;
+    split_only = false;
+    var fs_btn = document.getElementById("forced_split");
+    var fo_btn = document.getElementById("forcedonly");
+    var so_btn = document.getElementById("splitonly");
+
+    fs_btn.className = "btn btn-primarye";
+    fo_btn.className = "btn btn-info active";
+    so_btn.className = "btn btn-warning";
+    document.getElementById("current_strategy").innerHTML = "Forced-Update-Only";
+
+
+}  
+function sh_mode() {
+    force_split = false;
+    force_only = false;
+    split_only = true;
+    var fs_btn = document.getElementById("forced_split");
+    var fo_btn = document.getElementById("forcedonly");
+    var so_btn = document.getElementById("splitonly");
+
+    fs_btn.className = "btn btn-primarye";
+    fo_btn.className = "btn btn-info";
+    so_btn.className = "btn btn-warning active";
+    document.getElementById("current_strategy").innerHTML = "Split-Horizon-Only";
+
+}    
     
     
 
