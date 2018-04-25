@@ -9,6 +9,7 @@
     <script src="./view/dist/zrender.js"></script>
     <script type="text/javascript" src="./view/Vector_view.js"></script>
     <script type="text/javascript" src="./model/Model.js"></script>
+    <link rel="stylesheet" href="./controller.css">
 </head>
 
 <body>
@@ -53,6 +54,11 @@
                     <input type="text" class="ReceiveId" id="ReceiveId" aria-describedby="emailHelp" placeholder="Enter Receive id" name="ReceiveId">
                 </div>
                 <input type="button" value="Next Step" class="btn btn-primary" onclick = "manual_form_update();"></button>
+
+                <h5> AutoDisplay Speed</h5>
+                <input type="range" min="1" max="3000" value="2000" class="slider" id="play_speed" oninput = "playspeed();">
+                <h5 id = "now_speed">2000ms</h5>
+
             </div>
         </form>
     </div>

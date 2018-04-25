@@ -16,6 +16,7 @@ let force_split = true;
 let force_only = false;
 let split_only = false;
 let autoplay = false;
+let playspeednow = 2000;
 //class Graph
 //Not necessary
 
@@ -296,7 +297,7 @@ function findMinimum_split(start, target, next) {
         //animation happenning now! now testing!
         changeColor(start, target);
 
-        
+
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
@@ -574,7 +575,7 @@ function manually_update(x, z) {
             }
         }
 
-    }, 2000);
+    }, 1000);
 }
 
 function auto_display() {
@@ -596,7 +597,7 @@ function auto_display() {
         }
         interval_update();
         console.log("i am working");
-        }, 3000);
+        }, playspeednow);
 }
 
 function fs_mode() {
@@ -670,6 +671,14 @@ function changeColor(row, col) {
         console.log("start working4");
     }, 3000);
 }
+
+function playspeed() {
+    var speed = document.getElementById("play_speed");
+    var output = document.getElementById("now_speed");
+    playspeednow = Number(speed);
+    output.innerHTML = speed.value + "ms";
+    //otherthing
+} 
 
 window.onload = function() {
 
