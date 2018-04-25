@@ -22,11 +22,11 @@ view_node_parameters[6] = {color: '#fffd86',text: 'G'};
 let view_graph_parameters = [];
 view_graph_parameters[0] = {};
 view_graph_parameters[1] = {};
-view_graph_parameters[2] = {pos: [100,200,300,300,500,300],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
-view_graph_parameters[3] = {pos: [50,50,200,50,300,300,300,400],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
-view_graph_parameters[4] = {pos: [50,50,200,50,300,300,300,400,500,300],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
-view_graph_parameters[5] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
-view_graph_parameters[6] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200,600,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
+view_graph_parameters[2] = {pos: [100,200,300,300,500,300],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '25px Arial'};
+view_graph_parameters[3] = {pos: [50,50,200,50,300,300,300,400],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '25px Arial'};
+view_graph_parameters[4] = {pos: [50,50,200,50,300,300,300,400,500,300],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '25px Arial'};
+view_graph_parameters[5] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '25px Arial'};
+view_graph_parameters[6] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200,600,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '25px Arial'};
 
 var vector_des;
 var vector_des_after;
@@ -164,9 +164,7 @@ function clickNode(node)
       var parameter = view_graph_parameters[Node_Count-1];
       view_focused_node.animateTo({
         position: [parameter.pos[index*2],parameter.pos[index*2+1]]
-      }, function () {
-        // done
-      });
+      }, 1);
 
 }
 
@@ -193,6 +191,8 @@ function renderView()
 
 function cleanView()
 {
+  view_focused_node_id = 0;
+  view_focused_node = null;
   zr.remove(view_focused_node);
   for(var i=0;i<view_link_count;i++){
     zr.remove(view_link_list[i]);
@@ -231,7 +231,7 @@ function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,de
   zr.add(vector_src);
 
   vector_src.animate('', false)
-            .when(2000, {
+            .when(1000, {
                 position: [80+parameter.pos[des_id*2],parameter.pos[des_id*2+1]+30]
             })
             .done(function () {
