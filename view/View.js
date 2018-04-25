@@ -164,22 +164,37 @@ function cleanView()
 
 function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,des_a_nhop)
 {
-  zr.remove(vector_des);
-  zr.remove(vector_des_after);
-  zr.remove(vector_src);
-  delete vector_des;
-  delete vector_des_after;
-  delete vector_src;
+  if(vector_des){
+    zr.remove(vector_des);
+    delete vector_des;
+  }
+  if(vector_des_after){
+    zr.remove(vector_des_after);
+    delete vector_des_after;
+  }
+  if(vector_src){
+    zr.remove(vector_src);
+    delete vector_src;
+  }
 
-  var c_id = 'A'+view_focused_node_id;
+  var c_id = "A".charCodeAt(0)+view_focused_node_id;
   var parameter = view_graph_parameters[Node_Count-1];
 
-  vector_des = initVector(parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_dis,des_nhop);
-  vector_des_after = initVector(parameter.pos[des_id*2]+100,parameter.pos[des_id*2+1]+100,String.fromCharCode(c_id),des_a_dis,des_a_nhop);
-  vector_src = initVector(parameter.pos[src_id*2],parameter.pos[src_id*2+1],String.fromCharCode(c_id),src_dis,src_nhop);
+  vector_des = initVector(80+parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_dis,des_nhop);
+  vector_des_after = initVector(80+parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_a_dis,des_a_nhop);
+  vector_src = initVector(80+parameter.pos[src_id*2],parameter.pos[src_id*2+1],String.fromCharCode(c_id),src_dis,src_nhop);
 
   zr.add(vector_des);
-  zr.add(vector_des_after);
+  //zr.add(vector_des_after);
   zr.add(vector_src);
+
+  vector_src.animate('', false)
+            .when(2000, {
+                position: [80+parameter.pos[des_id*2],parameter.pos[des_id*2+1]+30]
+            })
+            .done(function () {
+                zr.add(vector_des_after);
+            })
+            .start();
 
 }

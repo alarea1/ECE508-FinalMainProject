@@ -3,12 +3,12 @@
 function initVector(x1,y1,des,distance,next_hop) {
     var vector_rect_width = 40;
     var vector_rect_height = 30;
-    var vector_font = '30px Arial';
+    var vector_font = '25px Arial';
 
     var rect1 = new zrender.Rect({
               scale: [1, 1],
               style: {
-                  fill: '#b8b8b8',
+                  fill: '#ff0004',
                   text: des,
                   textPosition: 'inside',
                   font: vector_font
