@@ -57,12 +57,14 @@ function distance_vector(num) {
       link_matrix = [];
       //////////
 
+      Node_Count = num;
+
       initTopology(num,0);
 
     // call front end module to render the processing table
       createFrontEndTable(num);
       // data structure edge(e: startID-endId: weight)
-      Node_Count = num;
+
       //examples:
       //graph_message[0] = {e: "0-1:4,0-2:2", n: 2}
       //graph_message[1] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,2-3:2", n: 5}
@@ -116,9 +118,11 @@ function distance_vector(num) {
             link_matrix[i][j] = graph_matrix[i][j];
         }
     }
+
     initView(Node_Count);
     initLinks(Node_Count);
     renderView();
+
 
     for (var row = 0; row < Node_Count; row++) {
         graph_table[row] = new Array(Node_Count);
@@ -175,6 +179,7 @@ function distance_vector(num) {
             }
         }
     }
+
 };
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -219,7 +224,7 @@ function findMinimum(start, target, next) {
         // havent consider how routing table should work when killing a node!
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
-        
+
         //animation happenning now! now testing!
         changeColor(start, target);
 
@@ -231,11 +236,11 @@ function findMinimum(start, target, next) {
             }
             if(last_cost == Infinity) {
                update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
-  
+
             } else {
                 update_cost.innerHTML = Number(now) + "(" + last_cost +")";
                 }
-            
+
             }
         }
 }
@@ -268,7 +273,7 @@ function findMinimum_force(start, target, next) {
                 }
             if(last_cost == Infinity) {
                update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
-  
+
             } else {
 
                 update_cost.innerHTML = Number(now) + "(" + last_cost +")";
@@ -304,7 +309,7 @@ function findMinimum_split(start, target, next) {
             update_hop.innerHTML =  next;
                 }
                 if(last_cost == Infinity) {
-               update_cost.innerHTML = Number(now) + "(" + "Inf" +")"; 
+               update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
                 } else {
                 update_cost.innerHTML = Number(now) + "(" + last_cost +")";
                 }
@@ -678,11 +683,11 @@ function playspeed() {
     playspeednow = Number(speed);
     output.innerHTML = speed.value + "ms";
     //otherthing
-} 
+}
 
 window.onload = function() {
 
-    distance_vector(7);
+    distance_vector(6);
     //setInterval(function() { interval_update(); }, 2000);
     //setTimeout(function(){
     //    for (var row = 0; row < Node_Count; row++) {
