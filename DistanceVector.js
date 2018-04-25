@@ -37,24 +37,52 @@ Graph.Edge = function GraphEdge(edge_message) {
      this.weight = edge_message.weight;
 };
 
+function restart() {
+    var main = document.getElementById("main");  
+    var childs = main.childNodes;  
+    for(var i=childs.length-1; i>=0; i--){      
+        main.removeChild(childs.item(i));      
+    } 
+    Node_Count = 0;
+    graph_table = new Array(Node_Count);
+    graph_message = {e:"A-B:weight,...",n:0};
+    graph = new Graph();
 
+    ready_topo = {};
+    unvisited = [];
+    isAlive = [];
+    node_neighbors = [];
+    graph_matrix = [];
+    link_matrix = [];
+    isStable = false;
+
+//updating strategy:
+    force_split = true;
+    force_only = false;
+    split_only = false;
+    autoplay = false;
+    playspeednow = 2000;
+     
+   
+}
 function distance_vector(num) {
       //clean everything
       cleanView();
-      delete graph_table;
-      delete graph;
-      delete unvisited;
-      delete isAlive;
-      delete node_neighbors;
-      delete graph_matrix;
-      delete link_matrix;
-      graph_table = new Array(Node_Count);
-      graph = new Graph();
-      unvisited = [];
-      isAlive = [];
-      node_neighbors = [];
-      graph_matrix = [];
-      link_matrix = [];
+      restart();
+      // delete graph_table;
+      // delete graph;
+      // delete unvisited;
+      // delete isAlive;
+      // delete node_neighbors;
+      // delete graph_matrix;
+      // delete link_matrix;
+      // graph_table = new Array(Node_Count);
+      // graph = new Graph();
+      // unvisited = [];
+      // isAlive = [];
+      // node_neighbors = [];
+      // graph_matrix = [];
+      // link_matrix = [];
       //////////
 
       Node_Count = num;
@@ -687,7 +715,7 @@ function playspeed() {
 
 window.onload = function() {
 
-    distance_vector(6);
+    distance_vector(5);
     //setInterval(function() { interval_update(); }, 2000);
     //setTimeout(function(){
     //    for (var row = 0; row < Node_Count; row++) {
