@@ -34,8 +34,11 @@ var vector_src;
 
 function initView(num)
 {
-  delete view_node_list;
-  view_node_list = new Array(num);
+  //delete view_node_list;
+  //view_node_list = new Array(num);
+  if(!view_node_list){
+    view_node_list = new Array(num);
+  }
 
   var i;
   for(i=0;i<num;i++){
@@ -60,9 +63,46 @@ function initView(num)
     });
 
     view_node_list[i] = newNode;
-    //view_node_list[i].on('click',clickNode(view_node_list[i]));
+    //view_node_list[i].on('click',clickNode(i.toString()));
 
   }
+
+  //click functions
+
+  view_node_list[0].on('click', function(e) {
+          clickNode(0);
+  });
+  view_node_list[1].on('click', function(e) {
+          clickNode(1);
+  });
+  view_node_list[2].on('click', function(e) {
+          clickNode(2);
+  });
+  if(num>3){
+    view_node_list[3].on('click', function(e) {
+            clickNode(3);
+    });
+    if(num>4){
+      view_node_list[4].on('click', function(e) {
+              clickNode(4);
+      });
+      if(num>5){
+        view_node_list[5].on('click', function(e) {
+                clickNode(5);
+        });
+        if(num>6){
+          view_node_list[6].on('click', function(e) {
+                  clickNode(6);
+          });
+        }
+      }
+    }
+
+
+  }
+
+
+  //
 
   newnode_x = view_graph_parameters[num-1].pos[0];
   newnode_y = view_graph_parameters[num-1].pos[1];
@@ -116,13 +156,9 @@ function initLinks(num)
 
 function clickNode(node)
 {
-    var index = 0;
-    for(i=0;i<view_node_list.length;i++){
-      if(node==view_node_list[i]){
-        index = i;
-        continue;
-      }
-    }
+
+  //console.log("click index:"+node);
+    var index = node;
 
       view_focused_node_id = index;
       var parameter = view_graph_parameters[Node_Count-1];
@@ -131,18 +167,24 @@ function clickNode(node)
       }, function () {
         // done
       });
+
 }
 
 function renderView()
 {
   for(var i=0;i<view_link_count;i++){
-    zr.add(view_link_list[i]);
+    if(view_link_list[i]){
+      zr.add(view_link_list[i]);
+    }
   }
-  zr.add(view_focused_node);
+  if(view_focused_node){
+    zr.add(view_focused_node);
+  }
   for(var i=0;i<Node_Count;i++){
-    zr.add(view_node_list[i]);
+    if(view_node_list[i]){
+      zr.add(view_node_list[i]);
+    }
   }
-
 }
 
 //function test(){
