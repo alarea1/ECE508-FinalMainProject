@@ -62,6 +62,7 @@ function distance_vector(num) {
       createFrontEndTable(num);
       // data structure edge(e: startID-endId: weight)
       Node_Count = num;
+      //examples:
       //graph_message[0] = {e: "0-1:4,0-2:2", n: 2}
       //graph_message[1] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,2-3:2", n: 5}
       //graph_message[2] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-4:3", n: 6}
@@ -173,7 +174,6 @@ function distance_vector(num) {
             }
         }
     }
-
 };
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -208,7 +208,7 @@ function findMinimum(start, target, next) {
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
     if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
-        var old_cost = graph_table[start][target].cost;
+        var last_cost = graph_table[start][target].cost;
 
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
@@ -218,13 +218,23 @@ function findMinimum(start, target, next) {
         // havent consider how routing table should work when killing a node!
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
+        
+        //animation happenning now! now testing!
+        changeColor(start, target);
+
+
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
             update_hop.innerHTML =  next;
+            }
+            if(last_cost == Infinity) {
+               update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
+  
+            } else {
+                update_cost.innerHTML = Number(now) + "(" + last_cost +")";
                 }
-            update_cost.innerHTML = Number(now);
-
+            
             }
         }
 }
@@ -236,7 +246,7 @@ function findMinimum_force(start, target, next) {
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
     if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)))) {
-        var old_cost = graph_table[start][target].cost;
+        var last_cost = graph_table[start][target].cost;
 
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
@@ -246,12 +256,22 @@ function findMinimum_force(start, target, next) {
         // havent consider how routing table should work when killing a node!
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
+
+        //animation happenning now! now testing!
+        changeColor(start, target);
+
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
             update_hop.innerHTML =  next;
                 }
-            update_cost.innerHTML = Number(now);
+            if(last_cost == Infinity) {
+               update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
+  
+            } else {
+
+                update_cost.innerHTML = Number(now) + "(" + last_cost +")";
+            }
 
             }
         }
@@ -263,7 +283,7 @@ function findMinimum_split(start, target, next) {
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
     if ((((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
-        var old_cost = graph_table[start][target].cost;
+        var last_cost = graph_table[start][target].cost;
 
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
@@ -272,13 +292,21 @@ function findMinimum_split(start, target, next) {
         // havent consider how routing table should work when killing a node!
         var update_hop = document.getElementById("hop" + start.toString() + target.toString());
         var update_cost = document.getElementById("cost" + start.toString() + target.toString());
+
+        //animation happenning now! now testing!
+        changeColor(start, target);
+
+        
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
             update_hop.innerHTML =  next;
                 }
-            update_cost.innerHTML = Number(now);
-
+                if(last_cost == Infinity) {
+               update_cost.innerHTML = Number(now) + "(" + "Inf" +")"; 
+                } else {
+                update_cost.innerHTML = Number(now) + "(" + last_cost +")";
+                }
             }
         }
 }
@@ -616,9 +644,32 @@ function sh_mode() {
 
 }
 
-
-
-
+function changeColor(row, col) {
+    var cost_tr = document.getElementById("cost"+row.toString()+col.toString());
+    var hop_tr = document.getElementById("hop"+row.toString()+col.toString());
+    console.log(cost_tr);
+    console.log("start shining!");
+    setTimeout(function(){
+        cost_tr.className = "bg-warning";
+        hop_tr.className = "bg-warning";
+        console.log("start working1");
+    }, 500);
+    setTimeout(function(){
+        cost_tr.className = "";
+        hop_tr.className = "";
+        console.log("start working2");
+    }, 1000);
+    setTimeout(function(){
+        cost_tr.className = "bg-warning";
+        hop_tr.className = "bg-warning";
+        console.log("start working3");
+    }, 2000);
+    setTimeout(function(){
+        cost_tr.className = "";
+        hop_tr.className = "";
+        console.log("start working4");
+    }, 3000);
+}
 
 window.onload = function() {
 
