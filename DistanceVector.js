@@ -77,7 +77,7 @@ function distance_vector(num) {
         }
     }
 
-    console.log(graph_message.e);
+    //console.log(graph_message.e);
     //read graph_message and add egdes to
     for(var i = 0; i < Node_Count; i++) {
         isAlive[i] = true;
