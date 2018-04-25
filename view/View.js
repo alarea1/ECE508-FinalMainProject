@@ -7,6 +7,7 @@ var view_node_list = new Array(Node_Count);
 let view_link_list = [];
 var view_link_count = 0;
 
+// target
 var view_focused_node_id = 0; // default A
 var view_focused_node;
 
@@ -204,6 +205,8 @@ function cleanView()
 
 //var vector1 = initVector(500,300,'C','B','50');
 
+
+//src==next, des==start
 function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,des_a_nhop)
 {
   if(vector_des){
