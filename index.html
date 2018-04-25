@@ -14,8 +14,46 @@
 
 <body>
 
-    <div id="view" style="width:60%;height:600px;"></div>
+    <div id="view" style="width:66%;height:30%;  display: inline-block;"></div>
     <script type="text/javascript" src="./view/View.js"></script>
+
+    <div class="card" style="width: 33%; display: inline-block; ">
+        <button type="button" class="btn btn btn-success" id = "autoplaybut" onclick = "auto_display();">autoplay</button>
+        <button type="button" class="btn btn-warning">Reset</button>
+        <div class="card" style="width: 100%;">
+            <h5 class="card-title">Distance Vector Strategy:</h5>
+            <h5 id = "current_strategy" class="card-title">Forced-Update & Split-Horizon(default)</h5>
+            <button type="button" class="btn btn-primary active" id = "forced_split" onclick = "fs_mode()">Forced-Update & Split-Horizon(default)</button>
+            <button type="button" class="btn btn-info" id = "forcedonly" onclick = "fu_mode()">Forced-Update-Only</button>
+            <button type="button" class="btn btn-warning" id = "splitonly" onclick = "sh_mode()">Split-Horizon-Only</button>
+        </div>
+
+
+
+        <div class="card" style="width: 100%;">
+            <form id= "manual_form" >
+                <div class="card-body">
+                    <h5 class="card-title">Manually Control</h5>
+                    <div class="form-group">
+                        <label for="Sender Id">Sender ID</label>
+                        <input type="text" class="SenderId" id="SenderId" aria-describedby="emailHelp" placeholder="Enter sender id" name="SenderId">
+                    </div>
+                        <label >is sending to:</label>
+                    <div class="form-group">
+                        <label for="Receive Id">Receive ID</label>
+                        <input type="text" class="ReceiveId" id="ReceiveId" aria-describedby="emailHelp" placeholder="Enter Receive id" name="ReceiveId">
+                    </div>
+                    <input type="button" value="Next Step" class="btn btn-primary" onclick = "manual_form_update();"></button>
+
+                    <h5> AutoDisplay Speed</h5>
+                    <input type="range" min="1" max="3000" value="2000" class="slider" id="play_speed" oninput = "playspeed();">
+                    <h5 id = "now_speed">2000ms</h5>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <form class="form-inline">
@@ -28,41 +66,8 @@
         </form>
 
     </nav>
-    <button type="button" class="btn btn btn-success" id = "autoplaybut" onclick = "auto_display();">autoplay</button>
-    <button type="button" class="btn btn-warning">Reset</button>
-    <div class="card" style="width: 36rem;">
-        <h5 class="card-title">Distance Vector Strategy:</h5>
-        <h5 id = "current_strategy" class="card-title">Forced-Update & Split-Horizon(default)</h5>
-        <button type="button" class="btn btn-primary active" id = "forced_split" onclick = "fs_mode()">Forced-Update & Split-Horizon(default)</button>
-        <button type="button" class="btn btn-info" id = "forcedonly" onclick = "fu_mode()">Forced-Update-Only</button>
-        <button type="button" class="btn btn-warning" id = "splitonly" onclick = "sh_mode()">Split-Horizon-Only</button>
-    </div>
 
-
-
-    <div class="card" style="width: 36rem;">
-        <form id= "manual_form" >
-            <div class="card-body">
-                <h5 class="card-title">Manually Control</h5>
-                <div class="form-group">
-                    <label for="Sender Id">Sender ID</label>
-                    <input type="text" class="SenderId" id="SenderId" aria-describedby="emailHelp" placeholder="Enter sender id" name="SenderId">
-                </div>
-                    <label >is sending to:</label>
-                <div class="form-group">
-                    <label for="Receive Id">Receive ID</label>
-                    <input type="text" class="ReceiveId" id="ReceiveId" aria-describedby="emailHelp" placeholder="Enter Receive id" name="ReceiveId">
-                </div>
-                <input type="button" value="Next Step" class="btn btn-primary" onclick = "manual_form_update();"></button>
-
-                <h5> AutoDisplay Speed</h5>
-                <input type="range" min="1" max="3000" value="2000" class="slider" id="play_speed" oninput = "playspeed();">
-                <h5 id = "now_speed">2000ms</h5>
-
-            </div>
-        </form>
-    </div>
-
+    
 
 
  <div id="main" style="width: 100%; display: inline-block; " class="card">

@@ -91,15 +91,7 @@ function distance_vector(num) {
 
     // call front end module to render the processing table
       createFrontEndTable(num);
-      // data structure edge(e: startID-endId: weight)
-
-      //examples:
-      //graph_message[0] = {e: "0-1:4,0-2:2", n: 2}
-      //graph_message[1] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,2-3:2", n: 5}
-      //graph_message[2] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-4:3", n: 6}
-      //graph_message[3] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3", n: 6}
-      //graph_message[4] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3", n: 7}
-      //graph_message[5] = {e: "0-1:4,0-2:2,1-2:1,0-3:1,1-4:2,0-5:3,1-6:3,2-7:4", n: 8}
+      
     for(var i = 0; i < Node_Count; i++) {
         graph_matrix[i] = new Array(Node_Count);
         for(var j = 0; j < Node_Count; j++) {
