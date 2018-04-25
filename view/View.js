@@ -28,6 +28,10 @@ view_graph_parameters[4] = {pos: [50,50,200,50,300,300,300,400,500,300],radius: 
 view_graph_parameters[5] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
 view_graph_parameters[6] = {pos: [50,50,200,50,300,300,300,400,500,300,200,200,600,200],radius: 40, font:'30px Arial',lineWidth:10,lineFont: '20px Arial'};
 
+var vector_des;
+var vector_des_after;
+var vector_src;
+
 function initView(num)
 {
   delete view_node_list;
@@ -75,6 +79,7 @@ function initView(num)
                   lineWidth: 10
               }
   });
+
 }
 
 function initLinks(num)
@@ -156,3 +161,25 @@ function cleanView()
 }
 
 //var vector1 = initVector(500,300,'C','B','50');
+
+function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,des_a_nhop)
+{
+  zr.remove(vector_des);
+  zr.remove(vector_des_after);
+  zr.remove(vector_src);
+  delete vector_des;
+  delete vector_des_after;
+  delete vector_src;
+
+  var c_id = 'A'+view_focused_node_id;
+  var parameter = view_graph_parameters[Node_Count-1];
+
+  vector_des = initVector(parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_dis,des_nhop);
+  vector_des_after = initVector(parameter.pos[des_id*2]+100,parameter.pos[des_id*2+1]+100,String.fromCharCode(c_id),des_a_dis,des_a_nhop);
+  vector_src = initVector(parameter.pos[src_id*2],parameter.pos[src_id*2+1],String.fromCharCode(c_id),src_dis,src_nhop);
+
+  zr.add(vector_des);
+  zr.add(vector_des_after);
+  zr.add(vector_src);
+
+}
