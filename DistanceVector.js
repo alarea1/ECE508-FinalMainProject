@@ -43,6 +43,21 @@ function restart() {
     for(var i=childs.length-1; i>=0; i--){
         main.removeChild(childs.item(i));
     }
+
+    for(var i=childs.length-1; i>=0; i--){
+        main.removeChild(childs.item(i));
+    }
+    var childs = document.getElementById("waiting_edges").childNodes;
+    for(var i=childs.length-1; i>=0; i--){
+        document.getElementById("waiting_edges").removeChild(childs.item(i));
+    }
+
+    var childs1 = document.getElementById("current_edge").childNodes;
+    for(var i=childs1.length-1; i>=0; i--){
+        document.getElementById("current_edge").removeChild(childs1.item(i));
+    }
+
+    
     Node_Count = 0;
     graph_table = new Array(Node_Count);
     graph_message = {e:"A-B:weight,...",n:0};
@@ -199,7 +214,8 @@ function distance_vector(num) {
             }
         }
     }
-
+    // 5th version
+    init_queue(unvisited);
 };
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +227,9 @@ function interval_update() {
     var next = unvisited.shift();
     unvisited.push(start);
     unvisited.push(next);
+    //5th version
+    update_queue(next, start);
+
     for (var target = 0; target < Node_Count; target++) {
         if(force_split == true){
             if (target != start) {
@@ -399,7 +418,7 @@ function findMinimum_split(start, target, next) {
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////  Viewer level  /////////////////////////////////////////
 function createFrontEndTable(nodecount) {
-    console.log("createFrontEndTable() function works!")
+    //console.log("createFrontEndTable() function works!")
     var main_div = document.getElementById("main");
     //console.log(main_div);
     for(var i = 0; i < nodecount ; i++) {
@@ -541,6 +560,13 @@ function createFrontEndTable(nodecount) {
 
         main_div.appendChild(sub_node_tab_card);
     }
+    for(var i = 0; i < nodecount; i++) {
+        var tab_sub = document.getElementById("node_tab" + i);
+        var color = getNodeColor(i);
+        console.log(color)
+        tab_sub.setAttribute("bordercolor", color);
+        tab_sub.setAttribute("border", 20);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -648,27 +674,32 @@ function manual_form_update() {
 
 
 function manually_update(x, z) {
+    //5th version
+    var x_num = nameToId(x);
+    var z_num = nameToId(z);
+    update_queue_not_add_end(z, x);
+
     setTimeout(function(){
-         console.log("manually_update is working steaming from:" + x + "to: " + z );
+         console.log("manually_update is working steaming from:" + x_num + "to: " + z_num );
          for (var target = 0; target < Node_Count; target++) {
-            if (target != x) {
+            if (target != x_num) {
                 if(force_split) {
                     //console.log("findMinimum force_split working!");
-                    findMinimum(x, target, z);
+                    findMinimum(x_num, target, z_num);
                 } else if(force_only){
                     //console.log("findMinimum force_only working!");
                     //have not implemented?
-                    findMinimum_force(x, target, z);
+                    findMinimum_force(x_num, target, z_num);
                 } else if(split_only) {
                     //console.log("findMinimum split_only working!");
                     //have not implemented?
-                    findMinimum_split(x, target, z);
+                    findMinimum_split(x_num, target, z_num);
                 }
 
             }
         }
 
-    }, 1000);
+    }, playspeednow);
 }
 
 function auto_display() {
@@ -781,6 +812,65 @@ function idToName(id){
 function nameToId(n){
   return n.charCodeAt(0)-"A".charCodeAt(0);
 }
+
+//////////////updating queue methods!////////////////////////////////////////////////////////
+//5th version:
+function init_queue(unvisited) {
+    var total_edge_info = "";
+    for(var i = 0; i < unvisited.length; i=i+2) {
+        var next_name = idToName(unvisited[i]);
+        var start_name = idToName(unvisited[i + 1]);
+        var edge_info = start_name +" -> "+ next_name + ";  ";
+        total_edge_info = total_edge_info.concat(edge_info);
+    }
+    var queue_elem = document.getElementById("waiting_edges");
+    console.log(queue_elem);
+    var infos = document.createTextNode(total_edge_info);
+    queue_elem.appendChild(infos);
+}
+function update_queue(next, start){
+    next_n = idToName(next);
+    start_n = idToName(start);
+    var now_edge = document.createTextNode(next_n + " -> " + start_n);
+    var total_edge_info = "";
+    for(var i = 0; i < unvisited.length; i=i+2) {
+        var next_name = idToName(unvisited[i]);
+        var start_name = idToName(unvisited[i + 1]);
+        var edge_info = next_name +" -> "+ start_name + "  " + "; ";
+        total_edge_info = total_edge_info.concat(edge_info);
+    }
+    var queue_elem = document.getElementById("waiting_edges");
+    var infos = document.createTextNode(total_edge_info);
+
+    var childs = document.getElementById("waiting_edges").childNodes;
+    for(var i=childs.length-1; i>=0; i--){
+        document.getElementById("waiting_edges").removeChild(childs.item(i));
+    }
+    document.getElementById("waiting_edges").appendChild(infos);
+
+    var childs1 = document.getElementById("current_edge").childNodes;
+    for(var i=childs1.length-1; i>=0; i--){
+        document.getElementById("current_edge").removeChild(childs1.item(i));
+    }
+    document.getElementById("current_edge").appendChild(now_edge);
+
+
+}
+function update_queue_not_add_end(next, start) {
+    
+
+    var now_edge = document.createTextNode(next + " -> " + start);
+    var total_edge_info = "";
+    
+    var childs1 = document.getElementById("current_edge").childNodes;
+    for(var i=childs1.length-1; i>=0; i--){
+        document.getElementById("current_edge").removeChild(childs1.item(i));
+    }
+    document.getElementById("current_edge").appendChild(now_edge);
+
+}
+
+
 
 function costToString(cost){
   if(cost==Infinity){
