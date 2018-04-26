@@ -38,11 +38,11 @@ Graph.Edge = function GraphEdge(edge_message) {
 };
 
 function restart() {
-    var main = document.getElementById("main");  
-    var childs = main.childNodes;  
-    for(var i=childs.length-1; i>=0; i--){      
-        main.removeChild(childs.item(i));      
-    } 
+    var main = document.getElementById("main");
+    var childs = main.childNodes;
+    for(var i=childs.length-1; i>=0; i--){
+        main.removeChild(childs.item(i));
+    }
     Node_Count = 0;
     graph_table = new Array(Node_Count);
     graph_message = {e:"A-B:weight,...",n:0};
@@ -62,8 +62,8 @@ function restart() {
     split_only = false;
     autoplay = false;
     playspeednow = 2000;
-     
-   
+
+
 }
 function distance_vector(num) {
       //clean everything
@@ -91,7 +91,7 @@ function distance_vector(num) {
 
     // call front end module to render the processing table
       createFrontEndTable(num);
-      
+
     for(var i = 0; i < Node_Count; i++) {
         graph_matrix[i] = new Array(Node_Count);
         for(var j = 0; j < Node_Count; j++) {
@@ -515,6 +515,9 @@ function disableNode(id) {
         graph_table[node_neighbors[Number(id_str)][i].end][Number(id_str)].next_hop = "N";
 
 
+        link_matrix[Number(id_str)][node_neighbors[Number(id_str)][i].end] = -1;
+        link_matrix[node_neighbors[Number(id_str)][i].end][Number(id_str)] = -1;
+
 
         var update_hop = document.getElementById("hop" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
         var update_cost = document.getElementById("cost" + Number(id_str).toString() + (node_neighbors[Number(id_str)][i].end).toString());
@@ -529,6 +532,11 @@ function disableNode(id) {
         update_hop_reverse.innerHTML = "None";
         update_cost_reverse.innerHTML = "Infinity";
     }
+
+    cleanView();
+    initView(Node_Count);
+    initLinks(Node_Count);
+    renderView();
 }
 
 
@@ -547,6 +555,8 @@ function ableNode(id) {
         graph_table[id][node_neighbors[id][i].end].next_hop = node_neighbors[id][i].end;
         graph_table[node_neighbors[id][i].end][id].next_hop = id;
 
+        link_matrix[id][node_neighbors[id][i].end] = node_neighbors[id][i].cost;
+        link_matrix[node_neighbors[id][i].end][id] = node_neighbors[id][i].cost;
 
 
         var update_hop = document.getElementById("hop" + id.toString() + (node_neighbors[id][i].end).toString());
@@ -563,6 +573,10 @@ function ableNode(id) {
         update_cost_reverse.innerHTML = graph_table[node_neighbors[id][i].end][id].cost;
 
     }
+    cleanView();
+    initView(Node_Count);
+    initLinks(Node_Count);
+    renderView();
 }
 
 function manual_form_update() {

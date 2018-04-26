@@ -130,12 +130,18 @@ function initLinks(num)
   for(var i = 0; i < num; i++) {
       for(var j = 0; j < i; j++) {
         if(link_matrix[i][j]!=Infinity){
+          var lineColor = '#949494';
+          var lineText = link_matrix[i][j].toString();
+          if(link_matrix[i][j]==-1){
+            lineColor = '#ff001a';
+            lineText = 'INF';
+          }
           var parameter = view_graph_parameters[num-1];
           var new_link = new zrender.Line({
             style: {
                 lineWidth:parameter.lineWidth,
-                stroke: '#949494',
-                text:link_matrix[i][j].toString(),
+                stroke: lineColor,
+                text:lineText,
                 width: 0,
                 height: 20,
                 textFill: '#000',
