@@ -723,6 +723,16 @@ function playspeed() {
     //otherthing
 }
 
+function idToName(id){
+  var c_id = "A".charCodeAt(0)+id;
+  return String.fromCharCode(c_id);
+}
+
+function nameToId(name){
+  return name.charCodeAt(0)-"A".charCodeAt(0);
+}
+
+
 window.onload = function() {
 
     distance_vector(5);
