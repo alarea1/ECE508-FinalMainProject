@@ -126,9 +126,9 @@ function distance_vector(num) {
         var initialEdgesReverse = document.getElementById("cost" + t.toString() + s.toString());
         initialEdgesReverse.innerHTML = Number(c);
         var initialHop = document.getElementById("hop" + s.toString() + t.toString());
-        initialHop.innerHTML = t;
+        initialHop.innerHTML = idToName(Number(t));
         var initialHop = document.getElementById("hop" + t.toString() + s.toString());
-        initialHop.innerHTML = s;
+        initialHop.innerHTML = idToName(Number(s));
     }
 
     // for rendering topology in view
@@ -181,7 +181,7 @@ function distance_vector(num) {
              else {
              var normalhop =  document.getElementById("hop" + row.toString() + col.toString());
              var normalcost =  document.getElementById("cost" + row.toString() + col.toString());
-             normalhop.innerHTML = graph_table[row][col].next_hop;
+             normalhop.innerHTML = idToName(Number(graph_table[row][col].next_hop));
              normalcost.innerHTML = graph_table[row][col].cost;
              }
         }
@@ -262,7 +262,7 @@ function findMinimum(start, target, next) {
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
-            update_hop.innerHTML =  next;
+            update_hop.innerHTML =  idToName(Number(next));
             }
             if(last_cost == Infinity) {
                update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
@@ -317,7 +317,7 @@ function findMinimum_force(start, target, next) {
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
-            update_hop.innerHTML =  next;
+            update_hop.innerHTML =  idToName(Number(next));
                 }
             if(last_cost == Infinity) {
                update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
@@ -373,7 +373,7 @@ function findMinimum_split(start, target, next) {
             if(now == Infinity) {
             update_hop.innerHTML =  "None";
             } else {
-            update_hop.innerHTML =  next;
+            update_hop.innerHTML =  idToName(Number(next));
                 }
                 if(last_cost == Infinity) {
                update_cost.innerHTML = Number(now) + "(" + "Inf" +")";
@@ -465,7 +465,7 @@ function createFrontEndTable(nodecount) {
         var node_tab_header = document.createElement('tr');
         //which has 3 th
         var node_tab_header_nodeinfo =document.createElement('th');
-        var node_tab_header_nodeinfo_text = document.createTextNode("This is Node : " + i );
+        var node_tab_header_nodeinfo_text = document.createTextNode("This is Node : " + idToName(i) );
 
 
         var killbutton = document.createElement('th');
@@ -526,7 +526,7 @@ function createFrontEndTable(nodecount) {
             var to_node_j_cost = document.createElement('td');
             var to_node_j_hop = document.createElement('td');
 
-            var to_node_j_dest_text = document.createTextNode("Node" + j);
+            var to_node_j_dest_text = document.createTextNode("Node " + idToName(j));
             to_node_j_cost.id = "cost" + i + j;
             to_node_j_hop.id = "hop" + i + j;
 
@@ -616,14 +616,14 @@ function ableNode(id) {
         var update_hop = document.getElementById("hop" + id.toString() + (node_neighbors[id][i].end).toString());
         var update_cost = document.getElementById("cost" + id.toString() + (node_neighbors[id][i].end).toString());
 
-        update_hop.innerHTML = node_neighbors[id][i].end;
+        update_hop.innerHTML = idToName(Number(node_neighbors[id][i].end));
         update_cost.innerHTML = graph_table[id][node_neighbors[id][i].end].cost;
 
 
         var update_hop_reverse = document.getElementById("hop"  + (node_neighbors[id][i].end).toString() + id.toString());
         var update_cost_reverse = document.getElementById("cost"  + (node_neighbors[id][i].end).toString() +id.toString());
 
-        update_hop_reverse.innerHTML = id.toString();
+        update_hop_reverse.innerHTML = idToName(Number(id.toString()));
         update_cost_reverse.innerHTML = graph_table[node_neighbors[id][i].end][id].cost;
 
     }
