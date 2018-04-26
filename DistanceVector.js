@@ -232,9 +232,11 @@ function interval_update() {
 function findMinimum(start, target, next) {
     console.log("findMinimum is working");
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
-      var now = graph_table[start][next].cost + graph_table[next][target].cost;
-      if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
+    var now = graph_table[start][next].cost + graph_table[next][target].cost;
+    if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
+
         var last_cost = graph_table[start][target].cost;
+        var last_hop = graph_table[start][target].next_hop;
 
         var old_start_hop = graph_table[start][target].next_hop;
         var old_start_cost = graph_table[start][target].cost;
@@ -290,6 +292,7 @@ function findMinimum_force(start, target, next) {
 
     if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)))) {
         var last_cost = graph_table[start][target].cost;
+        var last_hop = graph_table[start][target].next_hop;
 
         var old_start_hop = graph_table[start][target].next_hop;
         var old_start_cost = graph_table[start][target].cost;
@@ -344,6 +347,7 @@ function findMinimum_split(start, target, next) {
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
     if ((((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
         var last_cost = graph_table[start][target].cost;
+        var last_hop = graph_table[start][target].next_hop;
 
         var old_start_hop = graph_table[start][target].next_hop;
         var old_start_cost = graph_table[start][target].cost;
