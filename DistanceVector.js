@@ -232,13 +232,21 @@ function interval_update() {
 function findMinimum(start, target, next) {
     console.log("findMinimum is working");
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
-    var now = graph_table[start][next].cost + graph_table[next][target].cost;
-    if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
+      var now = graph_table[start][next].cost + graph_table[next][target].cost;
+      if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
         var last_cost = graph_table[start][target].cost;
+
+        var old_start_hop = graph_table[start][target].next_hop;
+        var old_start_cost = graph_table[start][target].cost;
 
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
 
+        if(target==view_focused_node_id){
+          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
+                    old_start_cost.toString(),idToName(old_start_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+        }
 
         //now update the responding part of routing table!
         // havent consider how routing table should work when killing a node!
@@ -259,10 +267,18 @@ function findMinimum(start, target, next) {
 
             } else {
                 update_cost.innerHTML = Number(now) + "(" + last_cost +")";
-                }
-
             }
+
+          }
+
+      else{
+        if(target==view_focused_node_id){
+          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
         }
+      }
+  }
 }
     //console.log("start is: " + start, "destination is: " + target, "cost is: " +  graph_table[start][target].cost, "the next hop is: " + next);
     //console.log("okay. let's finish this!")
@@ -271,12 +287,21 @@ function findMinimum_force(start, target, next) {
     console.log("findMinimum_force is working");
     if(graph_table[start][next].cost > 0 &&  graph_table[next][target].cost > 0){
     var now = graph_table[start][next].cost + graph_table[next][target].cost;
+
     if (graph_table[start][target].next_hop == next || (((now < graph_table[start][target].cost)))) {
         var last_cost = graph_table[start][target].cost;
+
+        var old_start_hop = graph_table[start][target].next_hop;
+        var old_start_cost = graph_table[start][target].cost;
 
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
 
+        if(target==view_focused_node_id){
+          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
+                    old_start_cost.toString(),idToName(old_start_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+        }
 
         //now update the responding part of routing table!
         // havent consider how routing table should work when killing a node!
@@ -300,7 +325,16 @@ function findMinimum_force(start, target, next) {
             }
 
             }
+
+      else{
+        if(target==view_focused_node_id){
+          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
         }
+      }
+
+    }
 }
 
 
@@ -311,8 +345,17 @@ function findMinimum_split(start, target, next) {
     if ((((now < graph_table[start][target].cost)) && start != graph_table[next][target].next_hop)) {
         var last_cost = graph_table[start][target].cost;
 
+        var old_start_hop = graph_table[start][target].next_hop;
+        var old_start_cost = graph_table[start][target].cost;
+
         graph_table[start][target].next_hop = next;
         graph_table[start][target].cost = now;
+
+        if(target==view_focused_node_id){
+          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
+                    old_start_cost.toString(),idToName(old_start_hop),
+                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+        }
 
         //now update the responding part of routing table!
         // havent consider how routing table should work when killing a node!
@@ -333,6 +376,13 @@ function findMinimum_split(start, target, next) {
                 } else {
                 update_cost.innerHTML = Number(now) + "(" + last_cost +")";
                 }
+            }
+            else{
+              if(target==view_focused_node_id){
+                sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
+                          graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop),
+                          graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+              }
             }
         }
 }
@@ -724,10 +774,14 @@ function idToName(id){
   return String.fromCharCode(c_id);
 }
 
-function nameToId(name){
-  return name.charCodeAt(0)-"A".charCodeAt(0);
+function nameToId(n){
+  return n.charCodeAt(0)-"A".charCodeAt(0);
 }
 
+//var test_name = idToName(4);
+//var test_id = nameToId("C");
+//console.log("test name:" + test_name);
+//console.log("test id:" + test_id.toString());
 
 window.onload = function() {
 
