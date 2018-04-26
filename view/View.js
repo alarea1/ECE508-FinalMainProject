@@ -211,6 +211,11 @@ function cleanView()
 
 //var vector1 = initVector(500,300,'C','B','50');
 
+function getNodeColor(id)
+{
+  return view_node_parameters[id].color;
+}
+
 
 //src==next, des==start
 function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,des_a_nhop)
