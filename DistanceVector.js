@@ -57,7 +57,7 @@ function restart() {
         document.getElementById("current_edge").removeChild(childs1.item(i));
     }
 
-    
+
     Node_Count = 0;
     graph_table = new Array(Node_Count);
     graph_message = {e:"A-B:weight,...",n:0};
@@ -663,8 +663,8 @@ function manual_form_update() {
 
     var form = document.getElementById("manual_form");
 
-    var senderId = form.SenderId.value;
-    var recieveId = form.ReceiveId.value;
+    var senderId = form.ReceiveId.value;
+    var recieveId = form.SenderId.value;
     form.reset();
     console.log(senderId);
     console.log(recieveId);
@@ -857,11 +857,11 @@ function update_queue(next, start){
 
 }
 function update_queue_not_add_end(next, start) {
-    
+
 
     var now_edge = document.createTextNode(next + " -> " + start);
     var total_edge_info = "";
-    
+
     var childs1 = document.getElementById("current_edge").childNodes;
     for(var i=childs1.length-1; i>=0; i--){
         document.getElementById("current_edge").removeChild(childs1.item(i));

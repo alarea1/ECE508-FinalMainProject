@@ -34,12 +34,12 @@
                 <div class="card-body">
                     <h5 class="card-title">Manually Control</h5>
                     <div class="form-group">
-                        <label for="Sender Id">Receiver ID</label>
+                        <label for="Sender Id">Sender ID</label>
                         <input type="text" class="SenderId" id="SenderId" aria-describedby="emailHelp" placeholder="Enter sender id" name="SenderId">
                     </div>
-                        <label >exchange table:</label>
+                        <label >Send info to:</label>
                     <div class="form-group">
-                        <label for="Receive Id">Sender ID</label>
+                        <label for="Receive Id">Receive ID</label>
                         <input type="text" class="ReceiveId" id="ReceiveId" aria-describedby="emailHelp" placeholder="Enter Receive id" name="ReceiveId">
                     </div>
                     <input type="button" value="Next Step" class="btn btn-primary" onclick = "manual_form_update();"></button>
@@ -70,11 +70,11 @@
 
 
     <div class="card" style="width: 100%; height: 18%; display: inline-block; ">
-        <div class="alert alert-success" style="width: 20%; height: 100%; display: inline-block;">           
+        <div class="alert alert-success" style="width: 20%; height: 100%; display: inline-block;">
         <strong>Curent edges:</strong><h6 id="current_edge"></h6>
         </div>
 
-        <div class="alert alert-warning" style="width: 78%; height: 100%; display: inline-block;">            
+        <div class="alert alert-warning" style="width: 78%; height: 100%; display: inline-block;">
         <strong>waiting edges:</strong><h6 id="waiting_edges"></h6>
         </div>
 
