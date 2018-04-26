@@ -245,9 +245,9 @@ function findMinimum(start, target, next) {
         graph_table[start][target].cost = now;
 
         if(target==view_focused_node_id){
-          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
-                    old_start_cost.toString(),idToName(old_start_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+          sendVector(next,start,costToString(graph_table[next][target].cost),idToName(graph_table[next][target].next_hop),
+                    costToString(old_start_cost),idToName(old_start_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop));
         }
 
         //now update the responding part of routing table!
@@ -275,9 +275,9 @@ function findMinimum(start, target, next) {
 
       else{
         if(target==view_focused_node_id){
-          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+          sendVector(next,start,costToString(graph_table[next][target].cost),idToName(graph_table[next][target].next_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop));
         }
       }
   }
@@ -301,9 +301,9 @@ function findMinimum_force(start, target, next) {
         graph_table[start][target].cost = now;
 
         if(target==view_focused_node_id){
-          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
-                    old_start_cost.toString(),idToName(old_start_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+          sendVector(next,start,costToString(graph_table[next][target].cost),idToName(graph_table[next][target].next_hop),
+                    costToString(old_start_cost),idToName(old_start_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop));
         }
 
         //now update the responding part of routing table!
@@ -331,9 +331,9 @@ function findMinimum_force(start, target, next) {
 
       else{
         if(target==view_focused_node_id){
-          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+          sendVector(next,start,costToString(graph_table[next][target].cost),idToName(graph_table[next][target].next_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop));
         }
       }
 
@@ -356,9 +356,9 @@ function findMinimum_split(start, target, next) {
         graph_table[start][target].cost = now;
 
         if(target==view_focused_node_id){
-          sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
-                    old_start_cost.toString(),idToName(old_start_hop),
-                    graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+          sendVector(next,start,costToString(graph_table[next][target].cost),idToName(graph_table[next][target].next_hop),
+                    costToString(old_start_cost),idToName(old_start_hop),
+                    costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop));
         }
 
         //now update the responding part of routing table!
@@ -383,9 +383,9 @@ function findMinimum_split(start, target, next) {
             }
             else{
               if(target==view_focused_node_id){
-                sendVector(next,start,graph_table[next][target].cost.toString(),idToName(graph_table[next][target].next_hop),
-                          graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop),
-                          graph_table[start][target].cost.toString(),idToName(graph_table[start][target].next_hop));
+                sendVector(next,start,costToString(graph_table[next][target].cost),idToName(graph_table[next][target].next_hop),
+                          costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop),
+                          costToString(graph_table[start][target].cost),idToName(graph_table[start][target].next_hop));
               }
             }
         }
@@ -780,6 +780,19 @@ function idToName(id){
 
 function nameToId(n){
   return n.charCodeAt(0)-"A".charCodeAt(0);
+}
+
+function costToString(cost){
+  if(cost==Infinity){
+    return "INF";
+  }
+  else{
+    return cost.toString();
+  }
+}
+
+function hopToString(){
+
 }
 
 //var test_name = idToName(4);
