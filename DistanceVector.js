@@ -156,8 +156,6 @@ function distance_vector(num) {
 
     initView(Node_Count);
     initLinks(Node_Count);
-    renderView();
-
 
     for (var row = 0; row < Node_Count; row++) {
         graph_table[row] = new Array(Node_Count);
@@ -214,6 +212,10 @@ function distance_vector(num) {
             }
         }
     }
+
+    initAllVectors(Node_Count);
+    renderView();
+
     // 5th version
     init_queue(unvisited);
 };
@@ -616,6 +618,7 @@ function disableNode(id) {
     cleanView();
     initView(Node_Count);
     initLinks(Node_Count);
+    initAllVectors(Node_Count);
     renderView();
 }
 
@@ -656,6 +659,7 @@ function ableNode(id) {
     cleanView();
     initView(Node_Count);
     initLinks(Node_Count);
+    initAllVectors(Node_Count);
     renderView();
 }
 

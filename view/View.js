@@ -7,6 +7,8 @@ var view_node_list = new Array(Node_Count);
 let view_link_list = [];
 var view_link_count = 0;
 
+var view_vector_list = new Array(Node_Count);
+
 // target
 var view_focused_node_id = 0; // default A
 var view_focused_node;
@@ -161,6 +163,38 @@ function initLinks(num)
   }
 }
 
+function initAllVectors(num)
+{
+  if(!view_vector_list){
+    view_vector_list = new Array(num);
+  }
+
+  var c_id = "A".charCodeAt(0)+view_focused_node_id;
+  var parameter = view_graph_parameters[Node_Count-1];
+
+  var i;
+  for(var i = 0; i < num; i++) {
+    var new_vector = initVector(80+parameter.pos[i*2],parameter.pos[i*2+1],String.fromCharCode(c_id),costToString(graph_table[i][view_focused_node_id].cost),idToName(graph_table[i][view_focused_node_id].next_hop));
+    view_vector_list[i] = new_vector;
+  }
+}
+
+function updateAllVectors(num)
+{
+  for(var i=0;i<Node_Count;i++){
+    zr.remove(view_vector_list[i]);
+  }
+
+  initAllVectors(num);
+
+  for(var i=0;i<num;i++){
+    if(view_vector_list[i]){
+      zr.add(view_vector_list[i]);
+    }
+  }
+}
+
+
 function clickNode(node)
 {
 
@@ -172,6 +206,8 @@ function clickNode(node)
       view_focused_node.animateTo({
         position: [parameter.pos[index*2],parameter.pos[index*2+1]]
       }, 1);
+
+    updateAllVectors(Node_Count);
 
 }
 
@@ -190,6 +226,12 @@ function renderView()
       zr.add(view_node_list[i]);
     }
   }
+
+  for(var i=0;i<Node_Count;i++){
+    if(view_vector_list[i]){
+      zr.add(view_vector_list[i]);
+    }
+  }
 }
 
 //function test(){
@@ -206,6 +248,7 @@ function cleanView()
   }
   for(var i=0;i<Node_Count;i++){
     zr.remove(view_node_list[i]);
+    zr.remove(view_vector_list[i]);
   }
 }
 
@@ -218,6 +261,8 @@ function getNodeColor(id)
 
 
 //src==next, des==start
+
+
 function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,des_a_nhop)
 {
   if(vector_des){
@@ -237,7 +282,7 @@ function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,de
   var parameter = view_graph_parameters[Node_Count-1];
 
   vector_des = initVector(80+parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_dis,des_nhop);
-  vector_des_after = initVector(80+parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_a_dis,des_a_nhop);
+  vector_des_after = initVectorUpdating(80+parameter.pos[des_id*2],parameter.pos[des_id*2+1],String.fromCharCode(c_id),des_a_dis,des_a_nhop);
   vector_src = initVector(80+parameter.pos[src_id*2],parameter.pos[src_id*2+1],String.fromCharCode(c_id),src_dis,src_nhop);
 
   zr.add(vector_des);
@@ -249,6 +294,7 @@ function sendVector(src_id,des_id,src_dis,src_nhop,des_dis,des_nhop,des_a_dis,de
                 position: [80+parameter.pos[des_id*2],parameter.pos[des_id*2+1]+30]
             })
             .done(function () {
+                updateAllVectors(Node_Count);
                 zr.add(vector_des_after);
             })
             .start();
